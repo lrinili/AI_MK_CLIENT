@@ -1,7 +1,7 @@
 export default {
   state: {
     lastQuestion: null,
-    currentQuestion: null
+    currentQuestion: null,
   },
   mutations: {
     saveCurrentQuestion (state, payload) {
@@ -9,16 +9,13 @@ export default {
     },
     saveLastQuestion (state, payload) {
       state.lastQuestion = payload
-    }
+    },
   },
   actions: {},
   getters: {
-    // getQuestionById: (state) => (id) => {
-    //   return state.lastQuestion.id === id ? state.lastQuestion : state.currentQuestion
-    // }
     getQuestionById (state) {
       return function (id) {
-        return state.lastQuestion.id === id ? state.lastQuestion : state.currentQuestion
+        return state.lastQuestion['interviewResult'].id === id ? state.lastQuestion : state.currentQuestion
       }
     }
   }

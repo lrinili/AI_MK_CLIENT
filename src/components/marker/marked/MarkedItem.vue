@@ -3,12 +3,12 @@
     <div class="container">
       <div class="head">
         <div>
-          <img alt="" :src="question.interviewer.avatar"/>
+          <img alt="" :src="question.avatar"/>
         </div>
       </div>
       <div class="center">
         <div class="name">
-          <div><span></span><span>{{question.interviewer.name}}</span></div>
+          <div><span></span><span>{{question.name}}</span></div>
         </div>
         <div class="job">
           <div><span>职位：</span><span>{{question.job}}</span></div>
@@ -44,7 +44,7 @@
       }
     },
     mounted () {
-      console.log(this.question)
+      // console.log(this.question)
     },
     methods: {
       viewDetail (qid) {

@@ -6,16 +6,20 @@
           <img src="../assets/login/logo.png" alt="">
         </div>
         <div class="login-type">
-          <popup-radio title="登陆角色" :options="loginTypes" v-model="form.login_type" placeholder="请选择"/>
+          <el-select v-model="form.loginType" :value="1" placeholder="登录角色">
+            <el-option :value="1" label="标注师"/>
+            <el-option :value="2" label="面试辅导师"/>
+            <el-option :value="3" label="简历辅导师"/>
+          </el-select>
         </div>
         <br>
         <div class="input_phone">
-          <el-input v-model="form.phone_no" placeholder="手机号码"/>
+          <el-input v-model="form.phoneNo" placeholder="手机号码"/>
         </div>
         <br>
         <div class="input_code">
           <div class="code">
-            <el-input v-model="form.code" placeholder="验证码"/>
+            <el-input v-model="form.captcha" placeholder="验证码"/>
           </div>
           <div class="send">
             <el-button :disabled="!isRightPhone" @click="getCode" :style="[send_btn,isRightPhone?active:inactive]">{{code_text}}</el-button>
@@ -30,28 +34,24 @@
         </div>
       </el-form>
     </div>
+    <alert v-model="showError" title="错误提示"> {{ this.errorMsg}}</alert>
   </div>
 </template>
 
 <script>
-  import {PopupRadio, Group} from 'vux'
-  import {sendCaptcha, userLogin} from '../util/api'
+  import {PopupRadio, Group, Alert} from 'vux'
+  import ElSelectDropdown from 'element-ui/packages/select/src/select-dropdown'
   
   export default {
     name: 'Login',
-    components: {PopupRadio, Group},
+    components: {ElSelectDropdown, PopupRadio, Group, Alert},
     data () {
       return {
         form: {
-          phone_no: '',
-          code: '',
-          login_type: ''
+          phoneNo: '13024524569',
+          captcha: '',
+          loginType: 1
         },
-        loginTypes: [
-          {key: 0, value: '标注师'},
-          {key: 1, value: '简历辅导师'},
-          {key: 2, value: '面试辅导师'}
-        ],
         send_btn: {
           border: 'none',
           height: '46.5px',
@@ -74,30 +74,30 @@
           color: 'gray'
         },
         remainingTime: 0,
-        waittingTime: 60
+        waittingTime: 60,
+        showError: false,
+        errorMsg: ''
       }
     },
     beforeMount () {
     },
     mounted () {
       document.title = 'Login'
-      this.$http.get('/api/get_phone').then(res => {
-        this.form.phone_no = res.data.phone_no
-      })
+      console.log(this.$httpClient)
     },
     computed: {
       code_text () {
         return this.remainingTime === 0 ? '发送验证码' : this.remainingTime + 's 后再试'
       },
       isRightPhone () {
-        return /(13|14|15|17|18|19)[0-9]{9}/.test(this.form.phone_no) && this.form.phone_no.length === 11 && this.remainingTime === 0
+        return /(13|14|15|17|18|19)[0-9]{9}/.test(this.form.phoneNo) && this.form.phoneNo.length === 11 && this.remainingTime === 0
       },
       isCaptchaFilled () {
-        let code = this.form.code
-        return code.length === 4 || code.length === 6
+        let captcha = this.form.captcha
+        return /[0-9]{4}/.test(captcha)
       },
       canLogin () {
-        return this.isCaptchaFilled && Number.isInteger(this.form.login_type)
+        return this.isCaptchaFilled && Number.isInteger(this.form.loginType)
       }
     },
     methods: {
@@ -109,22 +109,64 @@
             clearInterval(timer)
           }
         }, 1000)
-        this.$http.get(sendCaptcha, {params: {phone_no: this.form.phone_no}}).then(res => {
-          console.log(res)
-          if (res.data.result) {
-            this.form.code = '' + res.data.code
+        this.$httpClient.sendCaptcha(this.form.phoneNo).then(res => {
+          console.log(res.data)
+          if (res.data.resultCode !== '200') {
+            this.errorMsg = res.data.resultDesc
+            this.showError = true
+            this.remainingTime = 0
+            clearInterval(timer)
           }
+        }).catch(res => {
+          this.errorMsg = '服务器繁忙，稍后重试'
+          this.showError = true
+          this.remainingTime = 0
+          clearInterval(timer)
         })
       },
       submitLogin () {
-        this.$http.post(userLogin, this.form).then(res => {
-          if (res.data.result) {
-            let userInfo = res.data.user_info
-            console.log(userInfo)
-            sessionStorage.setItem('auth', JSON.stringify(userInfo))
-            this.$router.push({name: 'home'})
-          }
+        const loading = this.$loading({
+          lock: true,
+          text: '',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
         })
+        let testlogin = false
+        
+        if (testlogin) {
+          loading.close()
+          sessionStorage.setItem('auth', JSON.stringify(
+            {
+              loginType: this.form.loginType,
+              token: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+            }))
+          this.$router.push({name: 'home'})
+        } else {
+          this.$httpClient.authLogin({
+            phoneNo: this.form.phoneNo,
+            tempPass: this.form.captcha,
+            loginType: parseInt(this.form.loginType)
+          }).then(res => {
+            console.log(res.data)
+            loading.close()
+            if (res.data.resultCode === '200') {
+              let content = res.data.content
+              console.log(content)
+              sessionStorage.setItem('auth', JSON.stringify(
+                {
+                  ...content,
+                  loginType: this.form.loginType,
+                  token: content['mkToken'],
+                }))
+              this.$router.push({name: 'home'})
+            } else {
+              this.errorMsg = res.data.resultDesc
+              this.showError = true
+            }
+          }).catch(res => {
+            loading.close()
+          })
+        }
       }
     }
   }
@@ -132,7 +174,7 @@
 
 <style scoped lang="less">
   .bg {
-    background: url('../assets/login/bg.jpg') repeat-y center;
+    background: url('../assets/login/bg2.jpg') repeat-y center;
     background-size: 100% 100%;
     min-height: 100%;
     width: 100%;
@@ -154,7 +196,9 @@
     }
     
     .login-type {
-      background: red;
+      background: url("../assets/login/tp.png") no-repeat;
+      background-size: 100% 100%;
+      padding: 4px 0;
     }
     
     .input_phone {
@@ -196,6 +240,22 @@
         border: none;
         color: white;
       }
+    }
+    
+    .login-type {
+      .el-select {
+        width: 100%;
+        
+        input {
+          padding-left: 85px;
+        }
+      }
+    }
+  }
+  
+  .el-select-dropdown {
+    .popper__arrow {
+      left: 83px !important;
     }
   }
 </style>

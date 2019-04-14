@@ -4,26 +4,11 @@
       <component :is="currentComponent"></component>
     </div>
     <div style="height: 51px"></div>
-    <tabbar style="position: fixed" @on-index-change="onTabbarIndexChange">
-      <tabbar-item selected>
-        <img slot="icon" src="../assets/home/5.png" alt="">
-        <img slot="icon-active" src="../assets/home/4.png" alt="">
-        <span slot="label">开始</span>
-      </tabbar-item>
-      <tabbar-item>
-        <img slot="icon" src="../assets/home/7.png" alt="">
-        <img slot="icon-active" src="../assets/home/6.png" alt="">
-        <span slot="label">已标注</span>
-      </tabbar-item>
-      <tabbar-item>
-        <img slot="icon" src="../assets/home/9.png" alt="">
-        <img slot="icon-active" src="../assets/home/8.png" alt="">
-        <span slot="label">统计表</span>
-      </tabbar-item>
-      <tabbar-item>
-        <img slot="icon" src="../assets/home/3.png" alt="">
-        <img slot="icon-active" src="../assets/home/2.png" alt="">
-        <span slot="label">我的</span>
+    <tabbar style="position: fixed" @on-index-change="onTabbarIndexChange" v-model="currentTabbar">
+      <tabbar-item v-for="(layout,i) in currentLayout " :key="i">
+        <img slot="icon" alt="" :src="require(`../assets/home/${4*(4-currentLayout.length)+i}.png`)">
+        <img slot="icon-active" alt="" :src="require(`../assets/home/${4*(4-currentLayout.length)+i}-${4*(4-currentLayout.length)+i}.png`)">
+        <span slot="label">{{layout.title}}</span>
       </tabbar-item>
     </tabbar>
   </div>
@@ -34,7 +19,9 @@
   import Start from '../components/marker/start/Start'
   import Marked from '../components/marker/marked/Marked'
   import Statistics from '../components/marker/statistics/Statistics'
-  import My from '../components/marker/my/My'
+  import My from './common/My'
+  import Mentor from './mentor/Mentor'
+  import Customers from './mentor/Customers'
   
   export default {
     components: {TabbarItem, Tabbar},
@@ -45,25 +32,62 @@
           minHeight: (document.body.clientHeight - 51) + 'px',
           background: 'rgb(241, 241, 241)'
         },
-        components: [Start, Marked, Statistics, My],
+        currentLayout: [],
+        layouts: {
+          marker: [
+            {component: Start, title: '开始',},
+            {component: Marked, title: '已标注',},
+            {component: Statistics, title: '统计表',},
+            {component: My, title: '我的'},
+          ],
+          mentor: [
+            {component: Mentor, title: '首页',},
+            {component: Customers, title: '辅导客户',},
+            {component: My, title: '我的'},
+          ],
+        },
         currentTabbar: 0,
-        titles: ['开始', '已标注', '统计表', '个人中心']
+        flag: true
       }
     },
     mounted () {
-      // console.log(this.$route,parseInt(this.$route.hash.substring(1)))
-      // this.currentTabbar = this.$route.hash === '' ? 0 : parseInt(this.$route.hash.substring(1))
+      console.log('auth=', JSON.parse(sessionStorage.getItem('auth')))
+      let loginType = parseInt(JSON.parse(sessionStorage.getItem('auth')).loginType)
+      console.log('loginType=', loginType)
+      if (isNaN(loginType)) {
+      } else {
+        console.log('loginTye=', loginType)
+        if (loginType === 1) {
+          this.currentLayout = this.layouts.marker
+        } else {
+          this.currentLayout = this.layouts.mentor
+        }
+      }
+      console.log({
+        1: '标注师',
+        2: '面试辅导师',
+        3: '简历辅导师'
+      })
     },
     methods: {
       onTabbarIndexChange (newIndex) {
-        this.currentTabbar = newIndex
-        document.title = this.titles[newIndex]
-        this.$router.replace({name: 'home', hash: '#' + newIndex})
+        let hash = newIndex
+        if (this.flag) {
+          hash = this.$route.hash === '' ? 0 : parseInt(this.$route.hash.substring(1))
+        }
+        this.currentTabbar = hash
+        document.title = this.currentLayout.length === 0 ? '' : this.currentLayout[hash].title
+        this.$router.replace({name: 'home', hash: '#' + hash})
+        this.flag = false
       }
     },
     computed: {
       currentComponent () {
-        return this.components[this.currentTabbar]
+        console.log('currentComponent', this.currentLayout[this.currentTabbar])
+        if (this.currentLayout.length !== 0) {
+          return this.currentLayout[this.currentTabbar].component
+        }
+        return null
       }
     }
   }

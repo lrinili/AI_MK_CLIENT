@@ -4,6 +4,7 @@ import Login from '../components/Login'
 import Home from '../components/Home'
 import Mark from '../components/marker/start/Mark'
 import MarkedDetail from '../components/marker/marked/MarkedDetail'
+import CustomerDetail from '../components/mentor/CustomerDetail'
 
 Vue.use(Router)
 
@@ -32,6 +33,12 @@ const router = new Router({
       name: 'marked',
       component: MarkedDetail,
       meta: {requireAuth: true}
+    },
+    {
+      path: '/customer/:cid',
+      name: 'customer',
+      component: CustomerDetail,
+      meta: {requireAuth: true}
     }
   ]
 })
@@ -41,7 +48,7 @@ router.beforeEach(function (to, from, next) {
   let auth = JSON.parse(sessionStorage.getItem('auth')) || {token: ''}
   console.log(auth)
   // next()
-  if (to.name === 'login' && auth.token.length === 36) {
+  if (to.name === 'login' && auth.token.length === 32) {
     next({name: 'home'})
   } else {
     // 其他路由，如果匹配到的有任何一个要求用户登录，跳转到登录界面
@@ -49,7 +56,7 @@ router.beforeEach(function (to, from, next) {
       return record.meta.requireAuth
     })) {
       // 如果用户未登录，跳转到登录页面
-      if (auth.token.length !== 36) {
+      if (auth.token.length !== 32) {
         next({
           path: '/login'
         })

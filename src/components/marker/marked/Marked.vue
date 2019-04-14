@@ -1,12 +1,11 @@
 <template>
   <div>
-    <MarkedItem v-for="(item,i) in markedList" :key="i" :question="item"></MarkedItem>
+    <MarkedItem v-for="(i) in 10" :key="i" :question="{}"></MarkedItem>
   </div>
 </template>
 
 <script>
   import MarkedItem from './MarkedItem'
-  import {getMarkedList} from '../../../util/api'
   
   export default {
     name: 'Marked',
@@ -18,11 +17,21 @@
     },
     beforeMount () {
       let auth = JSON.parse(sessionStorage.getItem('auth'))
-      this.$http.get(getMarkedList, {params: {uid: auth.id}}).then(res => {
+      console.log(auth)
+      this.$httpClient.getMarkedList(auth.userId).then(res => {
         console.log(res)
-        if (res.data.result) {
-          this.markedList = res.data.questions
+        if (res.data.resultCode === "200") {
+          this.markedList = res.data.content.map((item) => {
+            return {
+            
+            }
+          })
         }
+        else{
+          console.warn(res.data)
+        }
+      }).catch(()=>{
+        console.log('服务器错误')
       })
     },
     mounted () {

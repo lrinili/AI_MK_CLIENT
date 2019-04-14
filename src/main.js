@@ -10,6 +10,9 @@ import App from './App'
 import element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import HttpClient from './util/http.js'
+import AudioCreator from './util/AudioHelper'
+import AudioVisual from 'vue-audio-visual'
+
 
 if (process.env.NODE_ENV === 'development') {
   require('./mock/mock')
@@ -18,7 +21,7 @@ if (process.env.NODE_ENV === 'development') {
 const option = {
   map: {
     home: {
-      enter: ['mark', 'marked']
+      enter: ['mark', 'marked','customer']
     },
     login: {
       enter: ['home']
@@ -29,9 +32,10 @@ const option = {
 FastClick.attach(document.body)
 Vue.config.productionTip = false
 Vue.use(vueg, router, option)
-// Vue.use(AjaxPlugin)
 Vue.use(HttpClient)
+Vue.use(AudioCreator)
 Vue.use(element)
+Vue.use(AudioVisual)
 
 /* eslint-disable no-new */
 new Vue({
