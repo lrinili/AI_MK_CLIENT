@@ -4,7 +4,8 @@ import Login from '../components/Login'
 import Home from '../components/Home'
 import Mark from '../components/marker/start/Mark'
 import MarkedDetail from '../components/marker/marked/MarkedDetail'
-import CustomerDetail from '../components/mentor/CustomerDetail'
+import Customer from '../components/mentor/Customer'
+import InterviewDetail from '../components/mentor/InterviewDetail'
 
 Vue.use(Router)
 
@@ -37,8 +38,14 @@ const router = new Router({
     {
       path: '/customer/:cid',
       name: 'customer',
-      component: CustomerDetail,
-      meta: {requireAuth: true}
+      component: Customer,
+      meta: {requireAuth: true},
+    },
+    {
+      path: '/detail/:id',
+      name: 'detail',
+      component: InterviewDetail,
+      meta: {requireAuth: true},
     }
   ]
 })

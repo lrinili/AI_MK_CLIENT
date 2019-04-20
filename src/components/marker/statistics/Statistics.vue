@@ -4,19 +4,19 @@
       <div>
         <div class="l">
           <div>
-            <div>500</div>
+            <div>{{monthlyIncome}}</div>
             <div>本月收入(元)</div>
           </div>
         </div>
         <div class="c">
           <div>
-            <div>13142</div>
+            <div>{{totalIncome}}</div>
             <div>总收入(元)</div>
           </div>
         </div>
         <div class="r">
           <div>
-            <div>90</div>
+            <div>{{monthlyMarkCount}}</div>
             <div>本月接单量(单)</div>
           </div>
         </div>
@@ -34,7 +34,10 @@
     name: 'Statistics',
     data () {
       return {
-        echart: null
+        echart: null,
+        monthlyIncome: 0,
+        monthlyMarkCount: 0,
+        totalIncome: 0,
       }
     },
     beforeMount () {
@@ -44,17 +47,17 @@
       let option = {
         color: 'black',
         title: {
-          text: '2019年标记统计表',
+          text: (new Date()).getFullYear() + '年标记统计表',
           left: 'center'
         },
         xAxis: {
-          name: '月份',
+          name: 'M',
           type: 'category',
           data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
         },
         yAxis: {
           type: 'value',
-          name: ''
+          name: 'C'
         },
         series: [{
           name: '每月统计量',
@@ -65,10 +68,45 @@
               position: 'insideTop'
             }
           },
-          data: [120, 200, 150, 80, 70, 110, 130, 200, 150, 80, 70, 110]
+          //data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         }]
       }
       this.echart.setOption(option)
+      let auth = JSON.parse(sessionStorage.getItem('auth'))
+      this.$httpClient.getStatistics(auth.userId).then(res => {
+        if (res.data.resultCode === '200') {
+          console.log(res.data)
+          this.monthlyIncome = res.data.content['monthlyIncome']
+          this.monthlyMarkCount = res.data.content['monthlyMarkCount']
+          this.totalIncome = res.data.content['totalIncome']
+          let dataArr = []
+          if(res.data.content['yearlyMarkCount']){
+            dataArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(m => {
+              return res.data.content['yearlyMarkCount'][m]
+            })
+          }
+          console.log(dataArr)
+          this.echart.setOption({
+            series: [{
+              name: '每月统计量',
+              type: 'bar',
+              label: {
+                normal: {
+                  show: true,
+                  position: 'top'
+                }
+              },
+              data: dataArr
+            }]
+          })
+        } else {
+          console.warn('返回错误', res.data.resultDesc)
+        }
+      })
+      .catch((res) => {
+        console.error('服务器错误',res)
+      })
+      
       window.onresize = () => {
         this.echart.resize()
       }

@@ -53,8 +53,8 @@
         </div>
       </div>
       <br><br>
-<!--      <div>{{this.remainingTimeOfModify}}</div>-->
-<!--      <div>{{this.remainingTimeOfMark}}</div>-->
+      <!--      <div>{{this.remainingTimeOfModify}}</div>-->
+      <!--      <div>{{this.remainingTimeOfMark}}</div>-->
     </div>
   </div>
 </template>
@@ -93,7 +93,8 @@
             rate: -1,
           },
           expression: {
-            text: '流畅', items: ['流畅', '不流畅'],
+            text: '流畅',
+            items: ['流畅', '不流畅'],
             rate: -1,
           },
         },
@@ -120,7 +121,7 @@
         this.goHome()
       } else {
         let {interviewResult} = this.currentQuestion
-        this.audioUrl = interviewResult['ansSpeechUrl'] || '/static/1.mp3'
+        this.audioUrl = interviewResult['ansSpeechUrl'] || ''
         this.interviewResultId = interviewResult.id
       }
     },
@@ -226,23 +227,33 @@
             },
             remarked: true,
           })
-          console.log('重新标注本题，并且获取下一提')
+          // 重新标注
+          console.log('重新标注本题', markerId, this.interviewResultId)
+          this.markCurrent(markerId, true)
+        } else {
+          // 直接标注
+          console.log('标注本题', markerId, this.interviewResultId)
+          this.markCurrent(markerId, false)
         }
-        this.markCurrent(markerId)
       },
-      markCurrent (markerId) {
+      // remarkCurrent (markerId) {
+      //   //
+      //   // console.log('模拟重新标注成功')
+      //   // this.getNext()
+      // },
+      markCurrent (markerId, remark) {
         this.$httpClient.mark({
           interviewResultId: this.interviewResultId,
           markerId,
           markResult: this.markResult,
-          speed: this.ratetemplate.speed.rate,
-          volume: this.ratetemplate.volume.rate,
-          tone: this.ratetemplate.tone.rate,
-          nervous: this.ratetemplate.nervous.rate,
-          expression: this.ratetemplate.expression.rate,
-        }).then(res => {
+          speed: this.ratetemplate.speed.rate + 1,
+          volume: this.ratetemplate.volume.rate + 1,
+          tone: this.ratetemplate.tone.rate + 1,
+          nervous: this.ratetemplate.nervous.rate + 1,
+          expression: this.ratetemplate.expression.rate + 1,
+        }, remark).then(res => {
           console.log('mark result=', res.data)
-          if (res.data.resultCode === '200' || res.data.resultCode === '处理成功') {
+          if (res.data.resultCode === '200') {  // || res.data.resultCode === '处理成功'
             this.getNext()
           } else if (res.data.resultCode === '204') {
             console.warn('本题已经别标注过了,联系浩然处理')
@@ -304,8 +315,6 @@
 </script>
 
 <style lang="less" scoped>
-  .dic {
-  }
   
   .sic {
     background: #36F6A1 !important;
@@ -377,6 +386,7 @@
         line-height: 50px;
         text-align: right;
         padding-right: 8px;
+        font-size: 12px;
       }
       
       p {
@@ -384,6 +394,7 @@
         line-height: 25px;
         text-align: left;
         padding-left: 8px;
+        font-size: 12px;
       }
     }
     
@@ -397,6 +408,7 @@
       padding: 5px 10px;
       word-wrap: break-word;
       word-break: break-all;
+      text-indent: 2em;
     }
     
     .checker2 {

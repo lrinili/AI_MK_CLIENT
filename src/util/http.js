@@ -1,15 +1,27 @@
 import axios from 'axios'
 
-// const env = process.env.NODE_ENV
-// const host = env === 'development' ? '' : 'https://aiqnmsg.cn/aimk/rest/wx'
-// console.log(process.env)
+console.log(process.env)
+const env = process.env.NODE_ENV
+const host = env === 'development' ? '/api' : 'https://aiqnmsg.cn/aimk/rest/wx'
 
-const host = '/api'
+//axios.defaults.baseURL = 'https://aiqnmsg.cn/aimk/rest/wx'
+//axios.defaults.headers.common['Authorization'] = 'AUTHORIZATION_TOKEN'
+//axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+
+// axios.interceptors.request.use(config => {
+//   config.data = JSON.stringify(config.data)
+//   config.headers = {
+//     'Content-Type': 'application/x-www-form-urlencoded'
+//   }
+//   return config
+// }, error => {
+//   return Promise.reject(error)
+// })
 
 class HttpClient {
   
   constructor () {
-    this.http = axios
+    this.axios = axios
     this.host = host
   }
   
@@ -19,10 +31,10 @@ class HttpClient {
     console.log('fetch =', method, url)
     switch (method) {
       case 'get': {
-        return this.http.get(url, {...config, params: {...params}})
+        return this.axios.get(url, {...config, params: {...params}})
       }
       case 'post': {
-        return this.http.post(url, params, config)
+        return this.axios.post(url, params, config)
       }
     }
   }
@@ -41,8 +53,9 @@ class HttpClient {
     return this.fetch('GET', '/wx/marker/getAInterviewResult')
   }
   
-  mark (form = {}) {
-    return this.fetch('POST', '/wx/marker/markInterviewResult', {
+  mark (form = {}, remark = false) {
+    let url = remark ? '/wx/marker/modMarkInterview' : '/wx/marker/markInterviewResult'
+    return this.fetch('POST', url, {
       ...form
     })
   }
@@ -51,8 +64,22 @@ class HttpClient {
     return this.fetch('GET', '/wx/marker/getMarkedRecordList', {markerId})
   }
   
-  getUserInfo (markerId) {
-    return this.fetch('GET', '/wx/marker/getMarkerInfo', {markerId})
+  getStatistics (markerId) {
+    return this.fetch('GET', '/wx/marker/getStatistics', {markerId})
+  }
+  
+  getUserInfo (id, type) {
+    let url = ''
+    let params = {id}
+    if (type === 1) {
+      url = '/wx/marker/getMarkerInfo'
+      params = {markerId: id}
+    } else if (type === 2) {
+      url = '/wx/vipinterview/detail'
+    } else if (type === 3) {
+      url = '/wx/vipresume/detail'
+    }
+    return this.fetch('GET', url, params)
   }
   
   getConsumptions (instructorType, instructorId) {
@@ -62,11 +89,29 @@ class HttpClient {
       })
   }
   
-  updateUserInfo (form = {}) {
-    return this.fetch('POST', '/common/userInfo/updateInfo', {
-      ...form
+  getInterviewItems (interviewerId) {
+    return this.fetch('GET', '/wx/interview/getInterviewItemByUser', {
+      interviewerId,
     })
   }
+  
+  getInterviewResults (mkInterviewItemId) {
+    return this.fetch('GET', 'wx/interview/getInterviewResultByItemId', {
+      mkInterviewItemId,
+    })
+  }
+  
+  getInterviewResultDetail (mkInterviewResultId) {
+    return this.fetch('GET', 'wx/interview/getInterviewResultDetail', {
+      mkInterviewResultId,
+    })
+  }
+  
+  // updateUserInfo (form = {}) {
+  //   return this.fetch('POST', '/common/userInfo/updateInfo', {
+  //     ...form
+  //   })
+  // }
 }
 
 export const h = new HttpClient()

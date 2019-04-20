@@ -13,7 +13,7 @@
            @timeupdate="ontimeupdate"
     ></audio>
     <div class="voice">
-      <canvas id="ctx" style="width: 100%;height: 100px;"></canvas>
+      <!--      <canvas id="ctx" style="width: 100%;height: 100px;"></canvas>-->
     </div>
     <div class="play-control">
       <div class="play">
@@ -39,11 +39,11 @@
         url: '',
         audioEl: null,
         playbtn: {
-          background: 'url("/static/play.png")',
+          backgroundImage: this.getUrl('play.png'),
           backgroundSize: '100% 100%'
         },
         pausebtn: {
-          background: 'url("/static/pause.png")',
+          background: this.getUrl('pause.png'),
           backgroundSize: '100% 100%'
         },
         sliderTime: 0,
@@ -82,14 +82,21 @@
       }
     },
     methods: {
+      getUrl (path) {
+        return 'url(' + require(`../../../assets/marker/mark/${path}`) + ')'
+      },
       playOrPause () {
         console.log(this.audioEl)
-        if (this.audio.playing) {
-          this.audioEl.pause()
+        if (this.url !== '' && this.url !== undefined && this.url !== null) {
+          if (this.audio.playing) {
+            this.audioEl.pause()
+          } else {
+            this.audioEl.play()
+          }
+          this.audio.playing = !this.audio.playing
         } else {
-          this.audioEl.play()
+          console.log('no vocie !')
         }
-        this.audio.playing = !this.audio.playing
       },
       onload (res) {
         console.log('onload', res)
@@ -118,7 +125,7 @@
         this.audio.maxTime = res.target.duration
       },
       onerror () {
-        console.log('onerror')
+        console.log('audio e3rror')
       },
       onended () {
         console.log('onended')
@@ -183,8 +190,9 @@
     background: black;
     
     .voice {
-      background: url("/static/voice.png");
+      background: url("../../../assets/marker/mark/voice.png");
       background-size: 100% 100%;
+      height: 100px;
     }
     
     .play-pause {

@@ -1,15 +1,17 @@
 <template>
   <div>
-    <ListItem v-for="(item,i) in consumptions" :key="i" :data="item"/>
+    <CustomerItem v-for="(item,i) in consumptions" :key="i" :info="item"/>
   </div>
 </template>
 
 <script>
-  import ListItem from '../common/ListItem'
+  
+  
+  import CustomerItem from './CustomerItem'
   
   export default {
     name: 'Customers',
-    components: {ListItem},
+    components: {CustomerItem},
     data () {
       return {
         consumptions: []
@@ -27,9 +29,11 @@
           res.data.content.forEach(item => {
             this.consumptions.push({
               avatar: item['avatarUrl'],
-              name:item['name'] || item['nickName'],
-              publishTime:item['cunsumTime'].substring(0,10),
-              id:item['mkInterviewerId']
+              name: item['name'] || item['nickName'],
+              publishTime: item['cunsumTime'].substring(0, 10),
+              cid: item['mkInterviewerId'],
+              phone: item['phoneNo'],
+              email: item['emailAddress'],
             })
           })
         } else {

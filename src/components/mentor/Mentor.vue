@@ -20,7 +20,8 @@
     mounted () {
       let auth = JSON.parse(sessionStorage.getItem('auth'))
       console.log(auth)
-      this.avatar = 'https://aiqnmsg.cn/aimk/rest/wx/download/getImage?imgType=avatar&fileName='+ auth.userInfo['avatar']
+      this.avatar = 'https://aiqnmsg.cn/aimk/rest/wx/download/getImage?imgType=avatar&fileName=' +
+        (auth.userInfo.hasOwnProperty('avatar') ? auth.userInfo.avatar : '')
     },
     methods: {},
     computed: {}

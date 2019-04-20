@@ -48,9 +48,9 @@
     data () {
       return {
         form: {
-          phoneNo: '13024524569',
+          phoneNo: '',
           captcha: '',
-          loginType: 1
+          loginType: 1,
         },
         send_btn: {
           border: 'none',
@@ -94,7 +94,7 @@
       },
       isCaptchaFilled () {
         let captcha = this.form.captcha
-        return /[0-9]{4}/.test(captcha)
+        return /[0-9]{4}/.test(captcha) && captcha.length === 4
       },
       canLogin () {
         return this.isCaptchaFilled && Number.isInteger(this.form.loginType)
@@ -117,7 +117,7 @@
             this.remainingTime = 0
             clearInterval(timer)
           }
-        }).catch(res => {
+        }).catch(() => {
           this.errorMsg = '服务器繁忙，稍后重试'
           this.showError = true
           this.remainingTime = 0
@@ -139,6 +139,10 @@
             {
               loginType: this.form.loginType,
               token: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+              userId: '60115272-89ed-4bcd-b355-7925c96e2b0e',
+              userInfo: {
+                avatar: 'user1.jpg'
+              }
             }))
           this.$router.push({name: 'home'})
         } else {
@@ -163,7 +167,8 @@
               this.errorMsg = res.data.resultDesc
               this.showError = true
             }
-          }).catch(res => {
+          }).catch(e => {
+            console.log(e)
             loading.close()
           })
         }

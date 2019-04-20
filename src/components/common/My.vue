@@ -20,12 +20,12 @@
     mounted () {
       let auth = JSON.parse(sessionStorage.getItem('auth'))
       let type = auth.loginType
-      console.log(type,'=logintype')
-      this.$httpClient.getUserInfo(auth['userId']).then((res) => {
-        if(res.data.resultCode === "200"){
+      console.log('logintype=', type)
+      this.$httpClient.getUserInfo(auth['userId'], type).then((res) => {
+        console.log('用户信息获取成功');
+        if (res.data.resultCode === '200') {
           this.userInfo = res.data.content
-        }
-        else{
+        } else {
           console.warn(res.data.resultDesc)
         }
       }).catch(() => {

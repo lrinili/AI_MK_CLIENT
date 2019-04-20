@@ -1,29 +1,18 @@
 <template>
   <div class="item">
-    <div class="container">
-      <div class="head">
-        <div>
-          <img alt="" :src="question.avatar"/>
+    <div class="container" @click="viewDetail(dataDetail.interviewResultId)">
+      <div class="top">
+        <div class="job-domain">
+          <div><span>职位类别：</span><span>{{dataDetail.domain}}</span></div>
+          <div><span>层级：</span><span>{{dataDetail.grade}}</span></div>
         </div>
+        <div class="time">{{dataDetail.time}}</div>
+        <div class="result">{{dataDetail.result ===0?'差':dataDetail.result===1?'良好':'优秀'}}</div>
       </div>
-      <div class="center">
-        <div class="name">
-          <div><span></span><span>{{question.name}}</span></div>
-        </div>
-        <div class="job">
-          <div><span>职位：</span><span>{{question.job}}</span></div>
-        </div>
-        <div class="level">
-          <div><span>层级：</span><span>{{question.level}}</span></div>
-        </div>
-      </div>
-      <div class="tail">
-        <div style="height: 50px;line-height: 50px">1分钟前</div>
-        <div style="height: 70px;line-height: 70px;">
-          <el-button
-            :style="viewBtn"
-            @click="viewDetail(question.id)">查看
-          </el-button>
+      <div class="qt">
+        <div class="mask">
+          <div class="title"><span>问题：</span>{{dataDetail.question}}</div>
+          <p class="content">{{dataDetail.content}}</p>
         </div>
       </div>
     </div>
@@ -34,20 +23,20 @@
   export default {
     name: 'MarkedItem',
     props: {
-      question: {
+      dataDetail: {
         type: Object, required: true
       }
     },
     data () {
-      return {
-        viewBtn: {background: '#141124', borderRadius: 0, width: '100px', color: 'white'}
-      }
+      return {}
     },
     mounted () {
-      // console.log(this.question)
+      // console.log(this.dataDetail)
     },
     methods: {
       viewDetail (qid) {
+        // console.log(qid)
+        // this.$store.commit('saveMarkedDeatil', this.dataDetail)
         this.$router.push({name: 'marked', params: {qid}})
       }
     }
@@ -56,66 +45,66 @@
 
 <style scoped lang="less">
   .item {
-    padding-bottom: 2px;
+    padding-bottom: 18px;
+    font-size: 12px;
     
     .container {
-      display: flex;
-      height: 120px;
       padding: 0;
-      border-bottom: 1px solid cadetblue;
-      
-      .head {
-        width: 100px;
-        height: 120px;
+      cursor: pointer;
+      border-bottom:  1px solid gray;
+      .top {
+        height: 52px;
+        background: black;
+        color: white;
         display: flex;
-        justify-content: center;
-        align-items: center;
-        align-content: center;
-        
-        div {
-          width: 90px;
-          height: 90px;
-          border-radius: 45px;
-          overflow: hidden;
-          
-          img {
-            width: 100%;
-            height: 100%;
-          }
-        }
-      }
-      
-      .center {
-        flex: auto;
-        display: flex;
-        flex-direction: column;
-        padding-left: 3px;
         
         > div {
-          flex: 1;
-          padding: 2px;
-          color: black;
+          flex: auto;
         }
         
-        .name {
-          div {
-            width: 50%;
-            border-bottom: 1px solid white;
+        .job-domain {
+          padding-left: 8px;
+          
+          > div {
+            height: 26px;
+            line-height: 26px;
           }
         }
         
-        .job, .level {
-          div {
-            width: 100%;
-            border-bottom: 1px solid white;
-          }
+        .time, .result {
+          height: 52px;
+          line-height: 52px;
+          text-align: center;
+        }
+        
+        .result {
+          background: #46FFB7;
+          width: 55px;
         }
       }
       
-      .tail {
-        width: 120px;
-        height: 100%;
-        text-align: center;
+      .qt {
+        background: url("../../../assets/marker/marked/bg.png");
+        background-size: 100% 100%;
+        color: white;
+        
+        .mask {
+          min-height: 80px;
+          padding: 8px;
+          background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .title {
+          height: 35px;
+          line-height: 35px;
+        }
+        
+        .content {
+          text-indent: 2em;
+          line-height: 28px;
+          width: 100%;
+          word-break: break-all;
+        }
       }
     }
   }

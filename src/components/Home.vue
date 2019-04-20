@@ -52,7 +52,8 @@
     },
     mounted () {
       console.log('auth=', JSON.parse(sessionStorage.getItem('auth')))
-      let loginType = parseInt(JSON.parse(sessionStorage.getItem('auth')).loginType)
+      let auth = JSON.parse(sessionStorage.getItem('auth'))
+      let loginType = parseInt(auth === null ? '1' : auth.loginType)
       console.log('loginType=', loginType)
       if (isNaN(loginType)) {
       } else {
