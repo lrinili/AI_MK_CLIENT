@@ -1,7 +1,7 @@
 <template>
   <div style="width: 100%;min-height: 100%;background: rgb(241, 241, 241)">
     <div class="container">
-      <div style="background: url(/src/assets/marker/marked/bg.png);margin-bottom: 15px;background-size: 100% 100%">
+      <div :style="rtStyle">
         <div class="top">
           <div>
             <p><span>职位类别：</span><span>{{dataDetail.domain}}</span></p>
@@ -57,6 +57,11 @@
     },
     data () {
       return {
+        rtStyle: {
+          backgroundImage: this.getImageUrl('bg.png'),
+          marginBottom: '15px',
+          backgroundSize: '100% 100%',
+        },
         dataDetail: {},
         ratetemplate: {
           speed: {
@@ -92,8 +97,11 @@
       this.fetchData()
     },
     methods: {
-      fetchData (){
-        console.log('fetchData',this.question);
+      getImageUrl(path){
+        return 'url(' + require(`../../assets/marker/marked/${path}`) + ')'
+      },
+      fetchData () {
+        console.log('fetchData', this.question)
         this.$httpClient.getInterviewResultDetail(this.question.id).then(res => {
           console.log(res.data)
           if (res.data.resultCode === '200') {
@@ -104,7 +112,7 @@
               markerId: item['mkMarkId'],
               domain: item['domain'],
               grade: item['grade'],
-              time: this.isMarkDetail?item['markTime'].substring(0, 10): item['answeredTime'].substring(0, 10),
+              time: this.isMarkDetail ? item['markTime'].substring(0, 10) : item['answeredTime'].substring(0, 10),
               result: item['mkMarkId'] ? parseInt(item['markResult']) : -1,
               question: item['questionsContent'],
               content: item['answerContent'],

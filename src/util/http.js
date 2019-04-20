@@ -2,7 +2,7 @@ import axios from 'axios'
 
 console.log(process.env)
 const env = process.env.NODE_ENV
-const host = env === 'development' ? '/api' : 'https://aiqnmsg.cn/aimk/rest/wx'
+const host = env === 'development' ? '/api' : '/aimk/rest'
 
 //axios.defaults.baseURL = 'https://aiqnmsg.cn/aimk/rest/wx'
 //axios.defaults.headers.common['Authorization'] = 'AUTHORIZATION_TOKEN'
@@ -96,13 +96,13 @@ class HttpClient {
   }
   
   getInterviewResults (mkInterviewItemId) {
-    return this.fetch('GET', 'wx/interview/getInterviewResultByItemId', {
+    return this.fetch('GET', '/wx/interview/getInterviewResultByItemId', {
       mkInterviewItemId,
     })
   }
   
   getInterviewResultDetail (mkInterviewResultId) {
-    return this.fetch('GET', 'wx/interview/getInterviewResultDetail', {
+    return this.fetch('GET', '/wx/interview/getInterviewResultDetail', {
       mkInterviewResultId,
     })
   }
