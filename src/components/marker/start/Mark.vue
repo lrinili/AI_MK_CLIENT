@@ -155,7 +155,7 @@
         console.log('qid=', qid)
         this.currentQuestion = this.$store.getters.getQuestionById(qid)
         console.log('currentQuestion', this.currentQuestion)
-        
+        this.audioUrl = this.currentQuestion.interviewResult['ansSpeechUrl'] || ''
         let {interviewResult, ratetemplate} = this.currentQuestion
         this.interviewResultId = interviewResult.id
         

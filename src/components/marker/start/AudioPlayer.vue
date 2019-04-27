@@ -86,7 +86,7 @@
         return 'url(' + require(`../../../assets/marker/mark/${path}`) + ')'
       },
       playOrPause () {
-        console.log(this.audioEl)
+        console.log(this.audioEl,this.url)
         if (this.url !== '' && this.url !== undefined && this.url !== null) {
           if (this.audio.playing) {
             this.audioEl.pause()
