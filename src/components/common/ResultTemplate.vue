@@ -97,7 +97,7 @@
       this.fetchData()
     },
     methods: {
-      getImageUrl(path){
+      getImageUrl (path) {
         return 'url(' + require(`../../assets/marker/marked/${path}`) + ')'
       },
       fetchData () {
@@ -112,7 +112,10 @@
               markerId: item['mkMarkId'],
               domain: item['domain'],
               grade: item['grade'],
-              time: this.isMarkDetail ? item['markTime'].substring(0, 10) : item['answeredTime'].substring(0, 10),
+              time:
+                this.isMarkDetail
+                  ? item['markTime'] ? item['markTime'].substring(0, 10) : ''
+                  : item['answeredTime']? item['answeredTime'].substring(0, 10):'',
               result: item['mkMarkId'] ? parseInt(item['markResult']) : -1,
               question: item['questionsContent'],
               content: item['answerContent'],
