@@ -49,7 +49,7 @@
   import {XHeader, Checker, CheckerItem} from 'vux'
   
   export default {
-    name: 'MarkedDetail',
+    name: 'ResultTemplate',
     components: {XHeader, Checker, CheckerItem},
     props: {
       question: {type: Object, required: true},

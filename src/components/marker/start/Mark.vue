@@ -33,7 +33,7 @@
       </div>
       <div>
         <div style="padding: 0 10px;">
-          <div style="text-align: center;">
+          <div style="text-align: left;padding-left: 75px;">
             <span style="padding: 0 25px;background: #f1f1f1">综合评分</span>
           </div>
           <div style="height: 1px;background: black;margin-top: -12.5px;"></div>
@@ -413,7 +413,8 @@
     
     .checker2 {
       width: 250px;
-      margin: 0 auto;
+      /*margin: 0 auto;*/
+      padding-left: 15px;
       display: flex;
       justify-content: space-around;
       
@@ -429,7 +430,8 @@
     
     .btn-group {
       display: flex;
-      justify-content: center;
+      padding-left: 15px;
+      /*justify-content: center;*/
     }
   }
 </style>
