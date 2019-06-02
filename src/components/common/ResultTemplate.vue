@@ -66,26 +66,26 @@
         ratetemplate: {
           speed: {
             text: '语速',
-            items: ['太慢', '慢', '适中', '快', '太快'],
+            items: ['无效', '太慢', '慢', '适中', '快', '太快'],
             rate: -1,
           },
           volume: {
             text: '音量',
-            items: ['强', '适中', '弱',],
+            items: ['无效', '强', '适中', '弱',],
             rate: -1,
           },
           tone: {
             text: '音调',
-            items: ['紧张', '适中', '过平',],
+            items: ['无效', '紧张', '适中', '过平',],
             rate: -1,
           },
           nervous: {
             text: '紧张',
-            items: ['不紧张', '紧张',],
+            items: ['无效', '不紧张', '紧张',],
             rate: -1,
           },
           expression: {
-            text: '流畅', items: ['流畅', '不流畅'],
+            text: '流畅', items: ['无效', '流畅', '不流畅'],
             rate: -1,
           },
         },
@@ -119,11 +119,11 @@
               result: item['mkMarkId'] ? parseInt(item['markResult']) : -1,
               question: item['questionsContent'],
               content: item['answerContent'],
-              speed: parseInt(item['speed']) - 1,
-              volume: parseInt(item['volume']) - 1,
-              tone: parseInt(item['tone']) - 1,
-              nervous: parseInt(item['nervous']) - 1,
-              expression: parseInt(item['expression']) - 1,
+              speed: parseInt(item['speed']),
+              volume: parseInt(item['volume']),
+              tone: parseInt(item['tone']),
+              nervous: parseInt(item['nervous']),
+              expression: parseInt(item['expression']),
             }
             Object.keys(this.ratetemplate).forEach(key => {
               this.ratetemplate[key].rate = this.dataDetail[key]

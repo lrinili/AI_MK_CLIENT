@@ -74,27 +74,27 @@
         ratetemplate: {
           speed: {
             text: '语速',
-            items: ['太慢', '慢', '适中', '快', '太快'],
+            items: ['无效', '太慢', '慢', '适中', '快', '太快'],
             rate: -1,
           },
           volume: {
             text: '音量',
-            items: ['强', '适中', '弱',],
+            items: ['无效', '强', '适中', '弱',],
             rate: -1,
           },
           tone: {
             text: '音调',
-            items: ['紧张', '适中', '过平',],
+            items: ['无效', '紧张', '适中', '过平',],
             rate: -1,
           },
           nervous: {
             text: '紧张',
-            items: ['不紧张', '紧张',],
+            items: ['无效', '不紧张', '紧张',],
             rate: -1,
           },
           expression: {
             text: '流畅',
-            items: ['流畅', '不流畅'],
+            items: ['无效', '流畅', '不流畅'],
             rate: -1,
           },
         },
@@ -246,11 +246,11 @@
           interviewResultId: this.interviewResultId,
           markerId,
           markResult: this.markResult,
-          speed: this.ratetemplate.speed.rate + 1,
-          volume: this.ratetemplate.volume.rate + 1,
-          tone: this.ratetemplate.tone.rate + 1,
-          nervous: this.ratetemplate.nervous.rate + 1,
-          expression: this.ratetemplate.expression.rate + 1,
+          speed: this.ratetemplate.speed.rate,
+          volume: this.ratetemplate.volume.rate,
+          tone: this.ratetemplate.tone.rate,
+          nervous: this.ratetemplate.nervous.rate,
+          expression: this.ratetemplate.expression.rate,
         }, remark).then(res => {
           console.log('mark result=', res.data)
           if (res.data.resultCode === '200') {  // || res.data.resultCode === '处理成功'
