@@ -6,7 +6,6 @@
 
 <script>
   import MarkedItem from './MarkedItem'
-  
   export default {
     name: 'Marked',
     components: {MarkedItem},
