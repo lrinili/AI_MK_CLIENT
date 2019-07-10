@@ -4,9 +4,9 @@ console.log(process.env)
 const env = process.env.NODE_ENV
 const host = env === 'development' ? '/api' : '/aimk/rest'
 
-//axios.defaults.baseURL = 'https://aiqnmsg.cn/aimk/rest/wx'
-//axios.defaults.headers.common['Authorization'] = 'AUTHORIZATION_TOKEN'
-//axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+// axios.defaults.baseURL = 'https://aiqnmsg.cn/aimk/rest/wx'
+// axios.defaults.headers.common['Authorization'] = 'AUTHORIZATION_TOKEN'
+// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 
 // axios.interceptors.request.use(config => {
 //   config.data = JSON.stringify(config.data)
@@ -19,61 +19,67 @@ const host = env === 'development' ? '/api' : '/aimk/rest'
 // })
 
 class HttpClient {
-  
   constructor () {
     this.axios = axios
     this.host = host
   }
-  
+
   fetch (method, url, params = {}, config = {}) {
     method = method.toLowerCase()
     url = this.host + url
     console.log('fetch =', method, url)
     switch (method) {
       case 'get': {
-        return this.axios.get(url, {...config, params: {...params}})
+        return this.axios.get(url, { ...config, params: { ...params } })
       }
       case 'post': {
         return this.axios.post(url, params, config)
       }
     }
   }
-  
+
   sendCaptcha (phone) {
-    return this.fetch('get', '/loginPass/getVerification', {phone})
+    return this.fetch('get', '/loginPass/getVerification', { phone })
   }
-  
+
   authLogin (form = {}) {
-    return this.fetch('POST', '/wx/emLogin/getToken', {
-      ...form
-    }, {})
+    return this.fetch(
+      'POST',
+      '/wx/emLogin/getToken',
+      {
+        ...form
+      },
+      {}
+    )
   }
-  
+
   getQuestion () {
     return this.fetch('GET', '/wx/marker/getAInterviewResult')
   }
-  
+
   mark (form = {}, remark = false) {
-    let url = remark ? '/wx/marker/modMarkInterview' : '/wx/marker/markInterviewResult'
+    let url = remark
+      ? '/wx/marker/modMarkInterview'
+      : '/wx/marker/markInterviewResult'
     return this.fetch('POST', url, {
       ...form
     })
   }
-  
+
   getMarkedList (markerId = undefined) {
-    return this.fetch('GET', '/wx/marker/getMarkedRecordList', {markerId})
+    return this.fetch('GET', '/wx/marker/getMarkedRecordList', { markerId })
   }
-  
+
   getStatistics (markerId) {
-    return this.fetch('GET', '/wx/marker/getStatistics', {markerId})
+    return this.fetch('GET', '/wx/marker/getStatistics', { markerId })
   }
-  
+
   getUserInfo (id, type) {
     let url = ''
-    let params = {id}
+    let params = { id }
     if (type === 1) {
       url = '/wx/marker/getMarkerInfo'
-      params = {markerId: id}
+      params = { markerId: id }
     } else if (type === 2) {
       url = '/wx/vipinterview/detail'
     } else if (type === 3) {
@@ -81,37 +87,51 @@ class HttpClient {
     }
     return this.fetch('GET', url, params)
   }
-  
+
   getConsumptions (instructorType, instructorId) {
-    return this.fetch('GET', '/wx/consumption/getConsumptionList',
-      {
-        instructorId, instructorType
-      })
+    return this.fetch('GET', '/wx/consumption/getConsumptionList', {
+      instructorId,
+      instructorType
+    })
   }
-  
+
   getInterviewItems (interviewerId) {
     return this.fetch('GET', '/wx/interview/getInterviewItemByUser', {
-      interviewerId,
+      interviewerId
     })
   }
-  
+
   getInterviewResults (mkInterviewItemId) {
     return this.fetch('GET', '/wx/interview/getInterviewResultByItemId', {
-      mkInterviewItemId,
+      mkInterviewItemId
     })
   }
-  
+
   getInterviewResultDetail (mkInterviewResultId) {
     return this.fetch('GET', '/wx/interview/getInterviewResultDetail', {
-      mkInterviewResultId,
+      mkInterviewResultId
     })
   }
-  
+
   // updateUserInfo (form = {}) {
   //   return this.fetch('POST', '/common/userInfo/updateInfo', {
   //     ...form
   //   })
   // }
+
+  getNewAnswer () {
+    return this.axios.post(
+      'https://aiqnmsg.cn/znzp/wxchatbot/queryNewAnswer.shtml'
+    )
+  }
+  updateNewAnswer (form) {
+    return this.axios.post(
+      'https://aiqnmsg.cn/znzp/wxchatbot/updateNewAnswer.shtml',
+      {
+        ...form
+      }
+    )
+  }
 }
 
 export const h = new HttpClient()

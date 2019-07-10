@@ -6,12 +6,13 @@ import router from './router'
 import store from './store'
 import vueg from 'vueg'
 import App from './App'
-// import {AjaxPlugin} from 'vux'
 import element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import HttpClient from './util/http.js'
 import AudioCreator from './util/AudioHelper'
-// import AudioVisual from 'vue-audio-visual'
+
+import VueVideoPlayer from 'vue-video-player'
+import 'video.js/dist/video-js.css'
 
 if (process.env.NODE_ENV === 'development') {
   require('./mock/mock')
@@ -38,12 +39,13 @@ Vue.use(HttpClient)
 Vue.use(AudioCreator)
 Vue.use(element)
 // Vue.use(AudioVisual)
+Vue.use(VueVideoPlayer)
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
   store,
-  components: {App},
+  components: { App },
   template: '<App/>'
 })

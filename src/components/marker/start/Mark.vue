@@ -62,7 +62,7 @@
 <script>
   import {XHeader, Checker, CheckerItem, Loading, Alert} from 'vux'
   import AudioPlayer from './AudioPlayer'
-  
+
   export default {
     name: 'Mark',
     components: {AudioPlayer, XHeader, Checker, CheckerItem, Loading, Alert},
@@ -98,14 +98,14 @@
             rate: -1,
           },
         },
-        
+
         markResult: -1,
         ratedAll: false,
         remark: false,
-        
+
         isLoading: false,
         showAlert: false,
-        
+
         timeOfModify: 300,
         timeOfMark: 900,
         remainingTimeOfModify: 0,   // 剩余可修改时间
@@ -158,7 +158,7 @@
         this.audioUrl = this.currentQuestion['interviewResult']['ansSpeechUrl'] || ''
         let {interviewResult, ratetemplate} = this.currentQuestion
         this.interviewResultId = interviewResult.id
-        
+
         Object.keys(this.ratetemplate).forEach(key => {
           this.ratetemplate[key].rate = ratetemplate[key]
         })
@@ -315,16 +315,16 @@
 </script>
 
 <style lang="less" scoped>
-  
+
   .sic {
     background: #36F6A1 !important;
     border: 1.5px solid red !important;
   }
-  
+
   .rate {
     display: flex;
     height: 55px;
-    
+
     .item {
       width: 55px;
       height: 55px;
@@ -332,24 +332,24 @@
       text-align: center;
       font-weight: bold;
     }
-    
+
     .check {
       flex: auto;
       padding: 6px;
-      
+
       .line {
         width: 100%;
         height: 2px;
         background: #e6e1e1;
         margin-top: -22.5px;
       }
-      
+
       .checker {
-        width: 100%;
+        // width: 100%;
         display: flex;
         justify-content: flex-start;
         margin-left: 8px;
-        
+
         > div {
           width: 40px;
           height: 40px;
@@ -365,10 +365,10 @@
       }
     }
   }
-  
+
   .container {
     position: relative;
-    
+
     .top {
       width: 100%;
       height: 50px;
@@ -376,11 +376,11 @@
       background: black;
       color: white;
       display: flex;
-      
+
       > div {
         flex: 1;
       }
-      
+
       > div.time {
         height: 50px;
         line-height: 50px;
@@ -388,7 +388,7 @@
         padding-right: 8px;
         font-size: 12px;
       }
-      
+
       p {
         height: 25px;
         line-height: 25px;
@@ -397,27 +397,27 @@
         font-size: 12px;
       }
     }
-    
+
     .title {
       text-align: center;
       font-weight: bold;
       padding: 5px 0;
     }
-    
+
     .answer {
       padding: 5px 10px;
       word-wrap: break-word;
       word-break: break-all;
       text-indent: 2em;
     }
-    
+
     .checker2 {
       width: 250px;
       /*margin: 0 auto;*/
       padding-left: 15px;
       display: flex;
       justify-content: space-around;
-      
+
       > div {
         width: 65px;
         height: 35px;
@@ -427,7 +427,7 @@
         text-align: center;
       }
     }
-    
+
     .btn-group {
       display: flex;
       padding-left: 15px;
