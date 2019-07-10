@@ -192,7 +192,7 @@ export default {
     getgetNewAnswer() {
       this.$httpClient.getNewAnswer().then(res => {
         if (res.data.status === "200") {
-          console.log(res.data)
+          console.log('getgetNewAnswer', res.data)
           if (res.data.result) {
             this.question = res.data.result
             this.videoSource = this.question.problemVideoList.map(v => {
@@ -211,34 +211,45 @@ export default {
               }
             })
           }
-          // this.videoSource = [{
-          //   type: 'video/mp4',
-          //   src: 'http://1256823714.vod2.myqcloud.com/1e24fee6vodgzp1256823714/48d12b925285890781571068058/f0.mp4'
-          // }]
         }
       }).catch(e => {
-
+        this.$notify.error({
+          title: 'Error',
+          message: e.message
+        })
       })
     },
     gonext() {
-      console.log(this.question)
-      this.$httpClient.updateNewAnswer({
+      console.log('gonext', this.question)
+      for (let k in this.ratetemplate) {
+        console.log(k, this.ratetemplate[k].rate)
+      }
+      let form = {
         "id": this.question.id,
         "score": this.markResult,
-        "speechRateScore": this.ratetemplate['speed'].rate,
-        "speechVolumeScore": this.ratetemplate['volume'].rate,
-        "speechIntonationScore": this.ratetemplate['tone'].rate,
-        "speechNervousScore": this.ratetemplate['nervous'].rate,
-        "speechFluencyScore": this.ratetemplate['expression'].rate,
-      }).then(res => {
-        console.log(res)
-        for (let k in this.ratetemplate) {
-          this.ratetemplate[k].rate = null
+        "speechRateScore": isNaN(parseInt(this.ratetemplate['speed'].rate)) ? 0 : parseInt(this.ratetemplate['speed'].rate),
+        "speechVolumeScore": isNaN(parseInt(this.ratetemplate['volume'].rate)) ? 0 : parseInt(this.ratetemplate['volume'].rate),
+        "speechIntonationScore": isNaN(parseInt(this.ratetemplate['tone'].rate)) ? 0 : parseInt(this.ratetemplate['tone'].rate),
+        "speechNervousScore": isNaN(parseInt(this.ratetemplate['nervous'].rate)) ? 0 : parseInt(this.ratetemplate['nervous'].rate),
+        "speechFluencyScore": isNaN(parseInt(this.ratetemplate['expression'].rate)) ? 0 : parseInt(this.ratetemplate['expression'].rate),
+      }
+      console.log(form)
+      this.$httpClient.updateNewAnswer(form).then(res => {
+        console.log(res.data)
+        if (res.data.status === "200") {
+          for (let k in this.ratetemplate) {
+            this.ratetemplate[k].rate = null
+          }
+          this.markResult = -1
+          this.getgetNewAnswer()
+        } else {
+          return Promise.reject(new Error(res.data.message))
         }
-        this.markResult = -1
-        this.getgetNewAnswer()
       }).catch(e => {
-        console.log(e)
+        this.$notify.error({
+          title: 'Error',
+          message: e.message
+        })
       })
     }
   },
