@@ -1,6 +1,6 @@
 <template>
 <div style="min-height: 100%;background: rgb(241, 241, 241)">
-  <div class="container">
+  <div class="container" v-if="question.id">
     <div v-if="question.problemAnswerMethod === 1" class="top-video">
       <div class="com-pos">
         <div>公司名称：{{question.companyName}}</div>
