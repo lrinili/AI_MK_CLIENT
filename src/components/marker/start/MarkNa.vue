@@ -193,13 +193,24 @@ export default {
       this.$httpClient.getNewAnswer().then(res => {
         if (res.data.status === "200") {
           console.log(res.data)
-          this.question = res.data.result
-          this.videoSource = this.question.problemVideoList.map(v => {
-            return {
-              type: 'video/mp4',
-              src: v.videoUrl
-            }
-          })
+          if (res.data.result) {
+            this.question = res.data.result
+            this.videoSource = this.question.problemVideoList.map(v => {
+              return {
+                type: 'video/mp4',
+                src: v.videoUrl
+              }
+            })
+          } else {
+            this.$alert('没有更多的题目了', '提示', {
+              showClose: false,
+              confirmButtonText: '确定',
+              callback: action => {
+                // this.$router.push({path:'/'})
+                window.location.href = 'https://aiqnmsg.com'
+              }
+            })
+          }
           // this.videoSource = [{
           //   type: 'video/mp4',
           //   src: 'http://1256823714.vod2.myqcloud.com/1e24fee6vodgzp1256823714/48d12b925285890781571068058/f0.mp4'
