@@ -182,17 +182,34 @@ export default {
       },
       videoSource: [],
       markResult: -1,
-      question: {}
+      question: {},
+      isBeta: true,
     };
   },
   mounted() {
-    this.getgetNewAnswer()
+    // this.getNewAnswer()
+    this.$confirm('请选择正式区或者测试区？', '标注打分', {
+        showClose: false,
+        closeOnClickModal: false,
+        closeOnPressEscape: false,
+        distinguishCancelAndClose: true,
+        confirmButtonText: '正式区',
+        cancelButtonText: '测试区'
+      })
+      .then(() => {
+        this.isBeta = false
+        this.getNewAnswer()
+      })
+      .catch(action => {
+        this.isBeta = true
+        this.getNewAnswer()
+      });
   },
   methods: {
-    getgetNewAnswer() {
-      this.$httpClient.getNewAnswer().then(res => {
+    getNewAnswer() {
+      this.$httpClient.getNewAnswer(this.isBeta).then(res => {
         if (res.data.status === "200") {
-          console.log('getgetNewAnswer', res.data)
+          console.log('getNewAnswer', res.data)
           if (res.data.result) {
             this.question = res.data.result
             this.videoSource = this.question.problemVideoList.map(v => {
@@ -234,14 +251,14 @@ export default {
         "speechFluencyScore": isNaN(parseInt(this.ratetemplate['expression'].rate)) ? 0 : parseInt(this.ratetemplate['expression'].rate),
       }
       console.log(form)
-      this.$httpClient.updateNewAnswer(form).then(res => {
+      this.$httpClient.updateNewAnswer(form, this.isBeta).then(res => {
         console.log(res.data)
         if (res.data.status === "200") {
           for (let k in this.ratetemplate) {
             this.ratetemplate[k].rate = null
           }
           this.markResult = -1
-          this.getgetNewAnswer()
+          this.getNewAnswer()
         } else {
           return Promise.reject(new Error(res.data.message))
         }

@@ -119,18 +119,15 @@ class HttpClient {
   //   })
   // }
 
-  getNewAnswer () {
-    return this.axios.post(
-      'https://aiqnmsg.cn/znzp/wxchatbot/queryNewAnswer.shtml'
-    )
+  getNewAnswer (isBeta = true) {
+    let baseUrl = isBeta ? 'https://aiqnmsg.cn' : 'https://aimianshiguan.com'
+    return this.axios.post(baseUrl + '/znzp/wxchatbot/queryNewAnswer.shtml')
   }
-  updateNewAnswer (form) {
-    return this.axios.post(
-      'https://aiqnmsg.cn/znzp/wxchatbot/updateNewAnswer.shtml',
-      {
-        ...form
-      }
-    )
+  updateNewAnswer (form, isBeta = true) {
+    let baseUrl = isBeta ? 'https://aiqnmsg.cn' : 'https://aimianshiguan.com'
+    return this.axios.post(baseUrl + '/znzp/wxchatbot/updateNewAnswer.shtml', {
+      ...form
+    })
   }
 }
 
