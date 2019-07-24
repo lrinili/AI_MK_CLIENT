@@ -318,20 +318,14 @@ export default {
   position: relative;
   color: white;
 
-  .title {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 15px;
-    z-index: 99;
-  }
-
   .com-pos {
     position: absolute;
-    top: 35px;
+    top: 5px;
     left: 0;
     right: 0;
     padding: 25px;
+    color:white;
+    z-index: 99;
   }
 
   .video {
