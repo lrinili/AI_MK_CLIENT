@@ -56,7 +56,7 @@ let database = MockJs.mock({
   ]
 })
 
-console.log('---DB---=', database)
+// console.log('---DB---=', database)
 
 function parseurl (url) {
   let search = url.split('?')

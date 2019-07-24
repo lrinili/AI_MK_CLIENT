@@ -5,19 +5,23 @@
       <div class="com-pos">
         <div>公司名称：{{question.companyName}}</div>
         <div>职位名称：{{question.jobtitle}}</div>
+        <div>面试者：{{question.name}}</div>
+        <div>手机号：{{question.phone}}</div>
       </div>
       <div class="video">
         <video-player :v-if="videoSource.length>0" :options="playerOptions" :playsinline="true" class="vjs-big-play-centered"></video-player>
       </div>
     </div>
-    <div v-if="question.problemAnswerMethod === 0" style="padding-left:35px;">
+    <div v-if="question.problemAnswerMethod === 0" style="padding-left:15px;">
       <div :style="{padding:'15px 0'}">
         <h3>公司名称：{{question.companyName}}</h3>
         <h4>职位名称：{{question.jobtitle}}</h4>
+        <h4>面试者：{{question.name}}</h4>
+        <h4>手机号：{{question.phone}}</h4>
       </div>
     </div>
     <div :style="{padding:'5px 15px'}">
-      <h3 v-html="question.problem">{{question.problem}}</h3>
+      <h3 v-html="question.problem" style="padding-top:15px;">{{question.problem}}</h3>
       <div class="answercontent">
         <div>
           <br>
@@ -212,7 +216,25 @@ export default {
         if (res.data.status === "200") {
           console.log('getNewAnswer', res.data)
           if (res.data.result) {
-            this.question = res.data.result
+            let question = res.data.result
+            let problem = question.problem
+            let videoTags = problem.match(/\<video(.*?)\>/gi)
+            if (!videoTags) {
+              videoTags = []
+            }
+            let w = document.body.clientWidth - 48 + 'px'
+            let newVideoTags = videoTags.map(tag => {
+              return tag
+                .replace(/width="(.*?)\"/gi, 'width="' + w + '"')
+                .replace(/height="(.*?)\"/gi, 'height="340px"')
+            })
+            newVideoTags.forEach((tag, i) => {
+              problem = problem.replace(videoTags[i], tag)
+            })
+            this.question = {
+              ...question,
+              problem
+            }
             this.videoSource = this.question.problemVideoList.map(v => {
               return {
                 type: 'video/mp4',
@@ -279,7 +301,7 @@ export default {
     },
     playerOptions() {
       return {
-        width: document.body.clientWidth,
+        width: document.body.clientWidth - 22,
         height: 285,
         muted: false,
         preload: 'auto',
@@ -324,13 +346,13 @@ export default {
     left: 0;
     right: 0;
     padding: 25px;
-    color:white;
+    color: white;
     z-index: 99;
   }
 
   .video {
     margin: 0 auto;
-    width: 100vw;
+    width: calc(100%);
     height: 285px;
   }
 }
