@@ -33,7 +33,8 @@ const router = new Router({
     {
       path: '/markna/start',
       name: 'markna',
-      component: MarkNa
+      component: MarkNa,
+      meta: { requireAuth: true }
     },
     {
       path: '/marked/:qid',
@@ -73,7 +74,8 @@ router.beforeEach(function (to, from, next) {
       // 如果用户未登录，跳转到登录页面
       if (auth.token.length !== 32) {
         next({
-          path: '/login'
+          path: '/login',
+          query: { redirect: to.fullPath }
         })
       } else {
         // 用户已登录，直接进入

@@ -7,7 +7,7 @@
         <div>职位名称：{{question.jobtitle}}</div>
       </div>
       <div class="video">
-        <video-player :v-if="videoSource.length>0" :options="playerOptions" :playsinline="true"></video-player>
+        <video-player :v-if="videoSource.length>0" :options="playerOptions" :playsinline="true" class="vjs-big-play-centered"></video-player>
       </div>
     </div>
     <div v-if="question.problemAnswerMethod === 0" style="padding-left:35px;">
@@ -184,26 +184,27 @@ export default {
       markResult: -1,
       question: {},
       isBeta: true,
+      ratedAll: false,
     };
   },
   mounted() {
     // this.getNewAnswer()
-    this.$confirm('请选择正式区或者测试区？', '标注打分', {
-        showClose: false,
-        closeOnClickModal: false,
-        closeOnPressEscape: false,
-        distinguishCancelAndClose: true,
-        confirmButtonText: '正式区',
-        cancelButtonText: '测试区'
-      })
-      .then(() => {
+    this.$vux.confirm.show({
+      title: '标注打分',
+      content: '请选择正式区或者测试区？',
+      confirmText: '正式区',
+      cancelText: '测试区',
+      onConfirm: () => {
         this.isBeta = false
+        document.title = '正式区'
         this.getNewAnswer()
-      })
-      .catch(action => {
+      },
+      onCancel: () => {
         this.isBeta = true
+        document.title = '测试区'
         this.getNewAnswer()
-      });
+      }
+    })
   },
   methods: {
     getNewAnswer() {
@@ -219,12 +220,12 @@ export default {
               }
             })
           } else {
-            this.$alert('没有更多的题目了', '提示', {
-              showClose: false,
-              confirmButtonText: '确定',
-              callback: action => {
-                // this.$router.push({path:'/'})
-                window.location.href = 'https://aiqnmsg.com'
+            this.$vux.alert.show({
+              title: '提示',
+              content: '没有更多的题目了',
+              onShow() {},
+              onHide() {
+                window.location.href = 'https://aimianshiguan.com/'
               }
             })
           }
@@ -278,7 +279,7 @@ export default {
     },
     playerOptions() {
       return {
-        width: 480,
+        width: document.body.clientWidth,
         height: 285,
         muted: false,
         preload: 'auto',
@@ -335,7 +336,7 @@ export default {
 
   .video {
     margin: 0 auto;
-    width: 480px;
+    width: 100vw;
     height: 285px;
   }
 }
@@ -346,6 +347,7 @@ export default {
 
   .item {
     width: 55px;
+    min-width: 55px;
     height: 55px;
     line-height: 55px;
     text-align: center;
@@ -364,7 +366,7 @@ export default {
     }
 
     .checker {
-      min-width: 480px;
+      min-width: calc(100vw - 55px);
       display: flex;
       justify-content: flex-start;
       margin-left: 8px;
@@ -373,7 +375,7 @@ export default {
         width: 40px;
         height: 40px;
         background: #f1f1f1;
-        margin-right: 18px;
+        margin-right: 8px;
         font-weight: normal;
         font-size: 12px;
         line-height: 40px;

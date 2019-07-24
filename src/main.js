@@ -14,6 +14,10 @@ import AudioCreator from './util/AudioHelper'
 import VueVideoPlayer from 'vue-video-player'
 import 'video.js/dist/video-js.css'
 
+import { ConfirmPlugin, AlertPlugin } from 'vux'
+Vue.use(ConfirmPlugin)
+Vue.use(AlertPlugin)
+
 if (process.env.NODE_ENV === 'development') {
   require('./mock/mock')
 }
