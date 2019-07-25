@@ -345,7 +345,7 @@ export default {
     top: 5px;
     left: 0;
     right: 0;
-    padding: 25px;
+    padding: 10px 25px 25px 25px;
     color: white;
     z-index: 99;
   }
