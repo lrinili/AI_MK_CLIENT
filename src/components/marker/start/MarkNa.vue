@@ -9,7 +9,11 @@
         <div>手机号：{{question.phone}}</div>
       </div>
       <div class="video">
-        <video-player :v-if="videoSource.length>0" :options="playerOptions" :playsinline="true" class="vjs-big-play-centered"></video-player>
+        <video-player v-if="videoSource.length>0" :options="playerOptions" :playsinline="true" class="vjs-big-play-centered"></video-player>
+        <div v-else class="no-video">没有录制视频</div>
+      </div>
+      <div class="video-list"  v-if="videoSource.length>1">
+        <div v-for="(video,i) in videoSource" :key="i" @click="changeVideo(i)" :class="getclass(i)"><a>{{`视频 ${i}`}}</a></div>
       </div>
     </div>
     <div v-if="question.problemAnswerMethod === 0" style="padding-left:15px;">
@@ -189,6 +193,9 @@ export default {
       question: {},
       isBeta: true,
       ratedAll: false,
+      videoUrl: '',
+      autoplay: false,
+      index: 0,
     };
   },
   mounted() {
@@ -211,6 +218,16 @@ export default {
     })
   },
   methods: {
+    changeVideo(i){
+      // this.autoplay = true
+      this.index = i
+      this.videoUrl = this.videoSource[i].videoUrl
+    },
+    getclass(i){
+      if(i === this.index){
+        return 'active'
+      }
+    },
     getNewAnswer() {
       this.$httpClient.getNewAnswer(this.isBeta).then(res => {
         if (res.data.status === "200") {
@@ -222,7 +239,7 @@ export default {
             if (!videoTags) {
               videoTags = []
             }
-            let w = document.body.clientWidth - 48 + 'px'
+            let w = document.body.clientWidth -30 + 'px'
             let newVideoTags = videoTags.map(tag => {
               return tag
                 .replace(/width="(.*?)\"/gi, 'width="' + w + '"')
@@ -235,12 +252,18 @@ export default {
               ...question,
               problem
             }
-            this.videoSource = this.question.problemVideoList.map(v => {
-              return {
-                type: 'video/mp4',
-                src: v.videoUrl
-              }
-            })
+            this.videoSource = this.question.problemVideoList
+            // .map(v => {
+            //   return {
+            //     type: 'video/mp4',
+            //     src: v.videoUrl
+            //   }
+            // })
+            if(this.videoSource.length > 0){
+              console.log(this.videoSource.length,this.videoSource[0].videoUrl)
+              this.videoUrl = this.videoSource[0].videoUrl
+            }
+            this.autoplay = false
           } else {
             this.$vux.alert.show({
               title: '提示',
@@ -301,13 +324,17 @@ export default {
     },
     playerOptions() {
       return {
-        width: document.body.clientWidth - 22,
+        width: document.body.clientWidth,
         height: 285,
         muted: false,
         preload: 'auto',
         language: 'en',
+        autoplay: this.autoplay,
         playbackRates: [0.7, 1.0, 1.5, 2.0],
-        sources: this.videoSource,
+        sources: [{
+          type: 'video/mp4',
+          src: this.videoUrl
+        }],
       }
     }
   },
@@ -345,7 +372,8 @@ export default {
     top: 5px;
     left: 0;
     right: 0;
-    padding: 10px 25px 25px 25px;
+    padding-top: 10px;
+    padding-left: 25px;
     color: white;
     z-index: 99;
   }
@@ -354,6 +382,30 @@ export default {
     margin: 0 auto;
     width: calc(100%);
     height: 285px;
+
+    .no-video{
+      text-align: center;
+      line-height: 285px;
+    }
+  }
+
+  .video-list{
+    position: absolute;
+    right: 10px;
+    bottom: 30px;
+    z-index: 99;
+
+    .active{
+      color: blue;
+    }
+
+    >div{
+      cursor: pointer;
+      
+      a{
+        border-bottom: 1px solid steelblue;
+      }
+    }
   }
 }
 
