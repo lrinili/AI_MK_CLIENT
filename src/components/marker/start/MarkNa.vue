@@ -7,6 +7,7 @@
         <div>职位名称：{{question.jobtitle}}</div>
         <div>面试者：{{question.name}}</div>
         <div>手机号：{{question.phone}}</div>
+        <div>面试渠道：{{question.interviewChannel}}</div>
       </div>
       <div class="video">
         <video-player v-if="videoSource.length>0" :options="playerOptions" :playsinline="true" class="vjs-big-play-centered"></video-player>
@@ -401,7 +402,7 @@ export default {
 
     >div{
       cursor: pointer;
-      
+
       a{
         border-bottom: 1px solid steelblue;
       }
