@@ -1,5 +1,5 @@
 <template>
-<div style="min-height: 100%;background: rgb(241, 241, 241)">
+<div class="wrapper" style="min-height: 100%;background: rgb(241, 241, 241)">
   <div class="container" v-if="question.id">
     <div v-if="question.problemAnswerMethod === 1" class="top-video">
       <div class="com-pos">
@@ -13,7 +13,7 @@
         <video-player v-if="videoSource.length>0" :options="playerOptions" :playsinline="true" class="vjs-big-play-centered"></video-player>
         <div v-else class="no-video">没有录制视频</div>
       </div>
-      <div class="video-list"  v-if="videoSource.length>1">
+      <div class="video-list" v-if="videoSource.length>1">
         <div v-for="(video,i) in videoSource" :key="i" @click="changeVideo(i)" :class="getclass(i)"><a>{{`视频 ${i}`}}</a></div>
       </div>
     </div>
@@ -23,6 +23,7 @@
         <h4>职位名称：{{question.jobtitle}}</h4>
         <h4>面试者：{{question.name}}</h4>
         <h4>手机号：{{question.phone}}</h4>
+        <h4>面试渠道：{{question.interviewChannel}}</h4>
       </div>
     </div>
     <div :style="{padding:'5px 15px'}">
@@ -74,6 +75,7 @@
     </div>
     <br><br>
   </div>
+  <actionsheet v-model="showActionsheet" :menus="markServerList" theme="android" @on-click-menu="selectServer" :close-on-clicking-mask="false"></actionsheet>
 </div>
 </template>
 
@@ -81,12 +83,14 @@
 import {
   Checker,
   CheckerItem,
+  Actionsheet
 } from 'vux'
 
 export default {
   components: {
     Checker,
-    CheckerItem
+    CheckerItem,
+    Actionsheet
   },
   data() {
     return {
@@ -197,40 +201,75 @@ export default {
       videoUrl: '',
       autoplay: false,
       index: 0,
+      showActionsheet: true,
+      markServerList: {
+        beta: '测试区',
+        publish: '正式区',
+        aksbeta: '阿卡索测试区',
+        akspublish: '阿卡索正式区'
+      },
+      serverMap: {
+        beta: {
+          query: 'https://aiqnmsg.cn/znzp/wxchatbot/queryNewAnswer.shtml',
+          update: 'https://aiqnmsg.cn/znzp/wxchatbot/updateNewAnswer.shtml',
+        },
+        publish: {
+          query: 'https://aimianshiguan.com/znzp/wxchatbot/queryNewAnswer.shtml',
+          update: 'https://aimianshiguan.com/znzp/wxchatbot/updateNewAnswer.shtml',
+        },
+        aksbeta: {
+          query: 'https://test.aiqnmsg.com/znzp/wxchatbot/queryNewAnswer.shtml',
+          update: 'https://test.aiqnmsg.com/znzp/wxchatbot/updateNewAnswer.shtml',
+        },
+        akspublish: {
+          query: 'https://aks.aiqnmsg.com/znzp/wxchatbot/queryNewAnswer.shtml',
+          update: 'https://aks.aiqnmsg.com/znzp/wxchatbot/updateNewAnswer.shtml',
+        },
+      },
+      queryUrl: '',
+      updateUrl: ''
     };
   },
   mounted() {
     // this.getNewAnswer()
-    this.$vux.confirm.show({
-      title: '标注打分',
-      content: '请选择正式区或者测试区？',
-      confirmText: '正式区',
-      cancelText: '测试区',
-      onConfirm: () => {
-        this.isBeta = false
-        document.title = '正式区'
-        this.getNewAnswer()
-      },
-      onCancel: () => {
-        this.isBeta = true
-        document.title = '测试区'
-        this.getNewAnswer()
-      }
-    })
+    // this.$vux.confirm.show({
+    //   title: '标注打分',
+    //   content: '请选择正式区或者测试区？',
+    //   confirmText: '正式区',
+    //   cancelText: '测试区',
+    //   onConfirm: () => {
+    //     this.isBeta = false
+    //     document.title = '正式区'
+    //     this.getNewAnswer()
+    //   },
+    //   onCancel: () => {
+    //     this.isBeta = true
+    //     document.title = '测试区'
+    //     this.getNewAnswer()
+    //   }
+    // })
   },
   methods: {
-    changeVideo(i){
+    selectServer(server) {
+      console.log(server);
+      this.queryUrl = this.serverMap[server].query
+      this.updateUrl = this.serverMap[server].update
+      console.log(this.queryUrl)
+      console.log(this.updateUrl)
+      this.getNewAnswer()
+    },
+    changeVideo(i) {
       // this.autoplay = true
       this.index = i
       this.videoUrl = this.videoSource[i].videoUrl
     },
-    getclass(i){
-      if(i === this.index){
+    getclass(i) {
+      if (i === this.index) {
         return 'active'
       }
     },
     getNewAnswer() {
-      this.$httpClient.getNewAnswer(this.isBeta).then(res => {
+      this.$httpClient.getNewAnswer(this.queryUrl).then(res => {
         if (res.data.status === "200") {
           console.log('getNewAnswer', res.data)
           if (res.data.result) {
@@ -240,7 +279,7 @@ export default {
             if (!videoTags) {
               videoTags = []
             }
-            let w = document.body.clientWidth -30 + 'px'
+            let w = document.body.clientWidth - 30 + 'px'
             let newVideoTags = videoTags.map(tag => {
               return tag
                 .replace(/width="(.*?)\"/gi, 'width="' + w + '"')
@@ -260,8 +299,8 @@ export default {
             //     src: v.videoUrl
             //   }
             // })
-            if(this.videoSource.length > 0){
-              console.log(this.videoSource.length,this.videoSource[0].videoUrl)
+            if (this.videoSource.length > 0) {
+              console.log(this.videoSource.length, this.videoSource[0].videoUrl)
               this.videoUrl = this.videoSource[0].videoUrl
             }
             this.autoplay = false
@@ -298,7 +337,7 @@ export default {
         "speechFluencyScore": isNaN(parseInt(this.ratetemplate['expression'].rate)) ? 0 : parseInt(this.ratetemplate['expression'].rate),
       }
       console.log(form)
-      this.$httpClient.updateNewAnswer(form, this.isBeta).then(res => {
+      this.$httpClient.updateNewAnswer(form, this.updateUrl).then(res => {
         console.log(res.data)
         if (res.data.status === "200") {
           for (let k in this.ratetemplate) {
@@ -362,6 +401,16 @@ export default {
   border: 1.5px solid red !important;
 }
 
+.wrapper {
+  /deep/ .weui-actionsheet__cell {
+    cursor: pointer;
+
+    &:hover {
+      background: #d8d7d7;
+    }
+  }
+}
+
 .top-video {
   width: 100%;
   background: black;
@@ -384,26 +433,26 @@ export default {
     width: calc(100%);
     height: 285px;
 
-    .no-video{
+    .no-video {
       text-align: center;
       line-height: 285px;
     }
   }
 
-  .video-list{
+  .video-list {
     position: absolute;
     right: 10px;
     bottom: 30px;
     z-index: 99;
 
-    .active{
+    .active {
       color: blue;
     }
 
-    >div{
+    >div {
       cursor: pointer;
 
-      a{
+      a {
         border-bottom: 1px solid steelblue;
       }
     }
