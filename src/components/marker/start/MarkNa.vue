@@ -205,6 +205,7 @@ export default {
       markServerList: {
         beta: '测试区',
         publish: '正式区',
+        publishEn: '正式区-英文(空客)',
         aksbeta: '阿卡索测试区',
         akspublish: '阿卡索正式区'
       },
@@ -216,6 +217,10 @@ export default {
         publish: {
           query: 'https://aimianshiguan.com/znzp/wxchatbot/queryNewAnswer.shtml',
           update: 'https://aimianshiguan.com/znzp/wxchatbot/updateNewAnswer.shtml',
+        },
+        publishEn: {
+          query: 'https://en.aiqnmsg.com/znzp/wxchatbot/queryNewAnswer.shtml',
+          update: 'https://en.aiqnmsg.com/znzp/wxchatbot/updateNewAnswer.shtml',
         },
         aksbeta: {
           query: 'https://test.aiqnmsg.com/znzp/wxchatbot/queryNewAnswer.shtml',
