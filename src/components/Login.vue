@@ -5,13 +5,13 @@
       <div class="logo">
         <img src="../assets/login/logo.png" alt="">
       </div>
-      <div class="login-type">
+      <!-- <div class="login-type">
         <el-select v-model="form.loginType" :value="1" placeholder="登录角色">
           <el-option :value="1" label="标注师" />
-          <!-- <el-option :value="2" label="面试辅导师" />
-          <el-option :value="3" label="简历辅导师" /> -->
+          <el-option :value="2" label="面试辅导师" />
+          <el-option :value="3" label="简历辅导师" />
         </el-select>
-      </div>
+      </div> -->
       <br>
       <div class="input_phone">
         <el-input v-model="form.phoneNo" placeholder="Mobile number">

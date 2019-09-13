@@ -203,9 +203,9 @@ export default {
       index: 0,
       showActionsheet: true,
       markServerList: {
-        beta: '测试区',
-        publish: '正式区',
-        publishEn: '正式区-英文(空客)',
+        // beta: '测试区',
+        // publish: '正式区',
+        // publishEn: '正式区-英文(空客)',
         akspublish: 'Acadsoc',
         aksbeta: 'Acadsoc(Test)',
       },
