@@ -314,8 +314,9 @@ export default {
               title: '提示',
               content: '没有更多的题目了',
               onShow() {},
-              onHide() {
-                window.location.href = 'https://aimianshiguan.com/'
+              onHide: () => {
+                this.showActionsheet = true
+                // window.location.href = 'https://aimianshiguan.com/'
               }
             })
           }
