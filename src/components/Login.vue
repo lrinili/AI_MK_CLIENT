@@ -8,18 +8,23 @@
       <div class="login-type">
         <el-select v-model="form.loginType" :value="1" placeholder="登录角色">
           <el-option :value="1" label="标注师" />
-          <el-option :value="2" label="面试辅导师" />
-          <el-option :value="3" label="简历辅导师" />
+          <!-- <el-option :value="2" label="面试辅导师" />
+          <el-option :value="3" label="简历辅导师" /> -->
         </el-select>
       </div>
       <br>
       <div class="input_phone">
-        <el-input v-model="form.phoneNo" placeholder="手机号码" />
+        <el-input v-model="form.phoneNo" placeholder="Mobile number">
+          <el-select v-model="prefixPhone" slot="prepend">
+            <el-option label="+63" value="63"></el-option>
+            <el-option label="+86" value="86"></el-option>
+          </el-select>
+        </el-input>
       </div>
       <br>
       <div class="input_code">
         <div class="code">
-          <el-input v-model="form.captcha" placeholder="验证码" />
+          <el-input v-model="form.captcha" placeholder="Vertificaion code" />
         </div>
         <div class="send">
           <el-button :disabled="!isRightPhone" @click="getCode" :style="[send_btn,isRightPhone?active:inactive]">{{code_text}}</el-button>
@@ -27,12 +32,12 @@
       </div>
       <br>
       <div class="btn_login">
-        <el-button :disabled="!canLogin" @click="submitLogin" :style="[login_btn,canLogin?active:inactive]">登录
+        <el-button :disabled="!canLogin" @click="submitLogin" :style="[login_btn,canLogin?active:inactive]">Login
         </el-button>
       </div>
     </el-form>
   </div>
-  <alert v-model="showError" title="错误提示"> {{ this.errorMsg}}</alert>
+  <alert v-model="showError" title="Error" button-text="OK"> {{ this.errorMsg}}</alert>
 </div>
 </template>
 
@@ -83,7 +88,8 @@ export default {
       remainingTime: 0,
       waittingTime: 60,
       showError: false,
-      errorMsg: ''
+      errorMsg: '',
+      prefixPhone: '86'
     }
   },
   beforeMount() {},
@@ -93,17 +99,21 @@ export default {
   },
   computed: {
     code_text() {
-      return this.remainingTime === 0 ? '发送验证码' : this.remainingTime + 's 后再试'
+      return this.remainingTime === 0 ? 'Get Code' : this.remainingTime + 's 后再试'
     },
     isRightPhone() {
-      return /(13|14|15|17|18|19)[0-9]{9}/.test(this.form.phoneNo) && this.form.phoneNo.length === 11 && this.remainingTime === 0
+      if (this.prefixPhone === '+86') {
+        return /(13|14|15|17|18|19)[0-9]{9}/.test(this.form.phoneNo) && this.form.phoneNo.length === 11 && this.remainingTime === 0
+      } else {
+        return /\d+/.test(this.form.phoneNo)
+      }
     },
     isCaptchaFilled() {
       let captcha = this.form.captcha
-      return /[0-9]{4}/.test(captcha) && captcha.length === 4
+      return /([0-9]{4})|([0-9]{6})/.test(captcha) && (captcha.length === 4 || captcha.length === 6)
     },
     canLogin() {
-      return this.isCaptchaFilled && Number.isInteger(this.form.loginType)
+      return this.isCaptchaFilled && Number.isInteger(this.form.loginType) && this.isRightPhone
     }
   },
   methods: {
@@ -115,10 +125,10 @@ export default {
           clearInterval(timer)
         }
       }, 1000)
-      this.$httpClient.sendCaptcha(this.form.phoneNo).then(res => {
+      this.$httpClient.sendsms(this.form.phoneNo, this.prefixPhone).then(res => {
         console.log(res.data)
-        if (res.data.resultCode !== '200') {
-          this.errorMsg = res.data.resultDesc
+        if (res.data.code !== '2') {
+          this.errorMsg = res.data.msg
           this.showError = true
           this.remainingTime = 0
           clearInterval(timer)
@@ -137,17 +147,13 @@ export default {
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)'
       })
-      let testlogin = false
+      let testlogin = true
 
       if (testlogin) {
         loading.close()
         sessionStorage.setItem('auth', JSON.stringify({
           loginType: this.form.loginType,
           token: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-          userId: '60115272-89ed-4bcd-b355-7925c96e2b0e',
-          userInfo: {
-            avatar: 'user1.jpg'
-          }
         }))
         this.$router.push({
           name: 'home'
@@ -158,30 +164,30 @@ export default {
           tempPass: this.form.captcha,
           loginType: parseInt(this.form.loginType)
         }).then(res => {
-          console.log(res.data)
-          loading.close()
-          if (res.data.resultCode === '200') {
-            let content = res.data.content
-            console.log(content)
-            sessionStorage.setItem('auth', JSON.stringify({
-              ...content,
-              loginType: this.form.loginType,
-              token: content['mkToken'],
-            }))
-            console.log(this.$route)
-            if (this.$route.query.redirect) {
-              this.$router.push({
-                path: this.$route.query.redirect
-              })
-            } else {
-              this.$router.push({
-                name: 'home'
-              })
-            }
-          } else {
-            this.errorMsg = res.data.resultDesc
-            this.showError = true
-          }
+          // console.log(res.data)
+          // loading.close()
+          // if (res.data.resultCode === '200') {
+          //   let content = res.data.content
+          //   console.log(content)
+          //   sessionStorage.setItem('auth', JSON.stringify({
+          //     ...content,
+          //     loginType: this.form.loginType,
+          //     token: content['mkToken'],
+          //   }))
+          //   console.log(this.$route)
+          //   if (this.$route.query.redirect) {
+          //     this.$router.push({
+          //       path: this.$route.query.redirect
+          //     })
+          //   } else {
+          //     this.$router.push({
+          //       name: 'home'
+          //     })
+          //   }
+          // } else {
+          //   this.errorMsg = res.data.resultDesc
+          //   this.showError = true
+          // }
         }).catch(e => {
           console.log(e)
           loading.close()
@@ -226,6 +232,15 @@ export default {
     background: url("../assets/login/input_phone.png") no-repeat;
     background-size: 100% 100%;
     padding: 4px 30px 4px 65px;
+
+    /deep/ .el-input-group__prepend {
+      background: transparent;
+      border: none;
+
+      .el-select {
+        width: 80px;
+      }
+    }
   }
 
   .input_code {
@@ -270,12 +285,6 @@ export default {
         padding-left: 85px;
       }
     }
-  }
-}
-
-.el-select-dropdown {
-  .popper__arrow {
-    left: 83px !important;
   }
 }
 </style>

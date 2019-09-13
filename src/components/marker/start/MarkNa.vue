@@ -48,7 +48,7 @@
               {{item.name}}
             </checker-item>
           </checker>
-          <div class="line"></div>
+          <!-- <div class="line"></div> -->
         </div>
       </div>
     </div>
@@ -70,7 +70,7 @@
     <br>
     <div class="btn-group">
       <div>
-        <el-button @click="gonext" :disabled="!canGotoNext" type="primary">进入下一题</el-button>
+        <el-button @click="gonext" :disabled="!canGotoNext" type="primary">Next</el-button>
       </div>
     </div>
     <br><br>
@@ -206,8 +206,8 @@ export default {
         beta: '测试区',
         publish: '正式区',
         publishEn: '正式区-英文(空客)',
-        aksbeta: '阿卡索测试区',
-        akspublish: '阿卡索正式区'
+        akspublish: 'Acadsoc',
+        aksbeta: 'Acadsoc(Test)',
       },
       serverMap: {
         beta: {
@@ -235,25 +235,7 @@ export default {
       updateUrl: ''
     };
   },
-  mounted() {
-    // this.getNewAnswer()
-    // this.$vux.confirm.show({
-    //   title: '标注打分',
-    //   content: '请选择正式区或者测试区？',
-    //   confirmText: '正式区',
-    //   cancelText: '测试区',
-    //   onConfirm: () => {
-    //     this.isBeta = false
-    //     document.title = '正式区'
-    //     this.getNewAnswer()
-    //   },
-    //   onCancel: () => {
-    //     this.isBeta = true
-    //     document.title = '测试区'
-    //     this.getNewAnswer()
-    //   }
-    // })
-  },
+  mounted() {},
   methods: {
     selectServer(server) {
       console.log(server);
@@ -310,12 +292,19 @@ export default {
             }
             this.autoplay = false
           } else {
+            // this.question = {
+            //   id: 2,
+            //   problemAnswerMethod: 1,
+            // }
             this.$vux.alert.show({
-              title: '提示',
+              title: 'Notice',
               content: '没有更多的题目了',
+              buttonText: 'OK',
               onShow() {},
-              onHide() {
-                window.location.href = 'https://aimianshiguan.com/'
+              onHide: () => {
+                console.log(this)
+                this.showActionsheet = true
+                // window.location.href = 'https://aimianshiguan.com/'
               }
             })
           }
@@ -466,7 +455,7 @@ export default {
 
 .rate {
   display: flex;
-  height: 55px;
+  // height: 55px;
 
   .item {
     width: 55px;
@@ -481,28 +470,30 @@ export default {
     flex: auto;
     padding: 6px;
 
-    .line {
-      width: 100%;
-      height: 2px;
-      background: #e6e1e1;
-      margin-top: -22.5px;
-    }
+    // .line {
+    //   width: 100%;
+    //   height: 2px;
+    //   background: #e6e1e1;
+    //   margin-top: -22.5px;
+    // }
 
     .checker {
       min-width: calc(100vw - 55px);
-      display: flex;
-      justify-content: flex-start;
       margin-left: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
 
       >div {
-        width: 40px;
+        min-width: 120px;
         height: 40px;
         background: #f1f1f1;
         margin-right: 8px;
+        margin-bottom: 8px;
         font-weight: normal;
         font-size: 12px;
         line-height: 40px;
-        border-radius: 40px;
+        border-radius: 4px;
         text-align: center;
         border: 1.5px solid;
       }
@@ -518,7 +509,7 @@ export default {
   justify-content: space-around;
 
   >div {
-    width: 65px;
+    min-width: 65px;
     height: 35px;
     line-height: 35px;
     border: 1.5px solid black;

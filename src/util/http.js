@@ -1,4 +1,5 @@
 import axios from "axios";
+import qs from 'querystring'
 
 console.log(process.env);
 const env = process.env.NODE_ENV;
@@ -40,6 +41,18 @@ class HttpClient {
 
   sendCaptcha(phone) {
     return this.fetch("get", "/loginPass/getVerification", { phone });
+  }
+
+  sendsms(iPhone, prefixPhone) {
+    return this.axios.post(
+      "https://aks.aiqnmsg.com/znzp/registeruser/sendsms.shtml",
+      qs.stringify({ iPhone, prefixPhone }),
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        }
+      }
+    );
   }
 
   authLogin(form = {}) {

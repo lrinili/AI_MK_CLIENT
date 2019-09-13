@@ -8,6 +8,7 @@ import vueg from 'vueg'
 import App from './App'
 import element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import locale from "element-ui/lib/locale/lang/en";
 import HttpClient from './util/http.js'
 import AudioCreator from './util/AudioHelper'
 
@@ -41,7 +42,7 @@ Vue.config.productionTip = false
 Vue.use(vueg, router, option)
 Vue.use(HttpClient)
 Vue.use(AudioCreator)
-Vue.use(element)
+Vue.use(element, { locale });
 // Vue.use(AudioVisual)
 Vue.use(VueVideoPlayer)
 
