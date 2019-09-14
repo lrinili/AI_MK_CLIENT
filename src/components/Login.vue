@@ -14,7 +14,7 @@
       </div> -->
       <br>
       <div class="input_phone">
-        <el-input v-model="form.phoneNo" placeholder="Mobile number">
+        <el-input v-model="form.phoneNo" placeholder="Mobile Number">
           <el-select v-model="prefixPhone" slot="prepend">
             <el-option label="+63" value="63"></el-option>
             <el-option label="+86" value="86"></el-option>
@@ -24,7 +24,7 @@
       <br>
       <div class="input_code">
         <div class="code">
-          <el-input v-model="form.captcha" placeholder="Vertificaion code" />
+          <el-input v-model="form.captcha" placeholder="Verification Code" />
         </div>
         <div class="send">
           <el-button :disabled="!isRightPhone" @click="getCode" :style="[send_btn,isRightPhone?active:inactive]">{{code_text}}</el-button>
@@ -99,7 +99,7 @@ export default {
   },
   computed: {
     code_text() {
-      return this.remainingTime === 0 ? 'Get Code' : this.remainingTime + 's 后再试'
+      return this.remainingTime === 0 ? 'Get Code' : this.remainingTime + 's'
     },
     isRightPhone() {
       if (this.prefixPhone === '+86') {
@@ -125,16 +125,16 @@ export default {
           clearInterval(timer)
         }
       }, 1000)
-      this.$httpClient.sendsms(this.form.phoneNo, this.prefixPhone).then(res => {
+      this.$httpClient.sendsms(this.prefixPhone, this.form.phoneNo, ).then(res => {
         console.log(res.data)
-        if (res.data.code !== '2') {
-          this.errorMsg = res.data.msg
-          this.showError = true
-          this.remainingTime = 0
-          clearInterval(timer)
-        }
+        // if (res.data.code !== '2') {
+        //   this.errorMsg = res.data.msg
+        //   this.showError = true
+        //   this.remainingTime = 0
+        //   clearInterval(timer)
+        // }
       }).catch(() => {
-        this.errorMsg = '服务器繁忙，稍后重试'
+        this.errorMsg = 'Server is busy now.'
         this.showError = true
         this.remainingTime = 0
         clearInterval(timer)
@@ -147,7 +147,7 @@ export default {
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)'
       })
-      let testlogin = true
+      let testlogin = false
 
       if (testlogin) {
         loading.close()
@@ -159,14 +159,14 @@ export default {
           name: 'home'
         })
       } else {
-        this.$httpClient.authLogin({
-          phoneNo: this.form.phoneNo,
-          tempPass: this.form.captcha,
-          loginType: parseInt(this.form.loginType)
+        this.$httpClient.authLoginAks({
+          nationalcode: this.prefixPhone,
+          phone: this.form.phoneNo,
+          code: this.form.captcha
         }).then(res => {
-          // console.log(res.data)
-          // loading.close()
-          // if (res.data.resultCode === '200') {
+          console.log(res.data)
+          loading.close()
+          if (res.data.resultCode === '200') {
           //   let content = res.data.content
           //   console.log(content)
           //   sessionStorage.setItem('auth', JSON.stringify({
@@ -184,10 +184,10 @@ export default {
           //       name: 'home'
           //     })
           //   }
-          // } else {
-          //   this.errorMsg = res.data.resultDesc
-          //   this.showError = true
-          // }
+          } else {
+            this.errorMsg = res.data.resultDesc
+            this.showError = true
+          }
         }).catch(e => {
           console.log(e)
           loading.close()
@@ -266,8 +266,7 @@ export default {
     margin: 0 auto;
   }
 }
-</style>
-<style lang="less">
+</style><style lang="less">
 .login-container {
   .el-input {
     input {

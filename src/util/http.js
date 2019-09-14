@@ -43,10 +43,22 @@ class HttpClient {
     return this.fetch("get", "/loginPass/getVerification", { phone });
   }
 
-  sendsms(iPhone, prefixPhone) {
+  sendsms(nationalcode, phone) {
     return this.axios.post(
-      "https://aks.aiqnmsg.com/znzp/registeruser/sendsms.shtml",
-      qs.stringify({ iPhone, prefixPhone }),
+      "https://test.aiqnmsg.com/znzp/marker/getvercode.shtml",
+      qs.stringify({ nationalcode, phone }),
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        }
+      }
+    );
+  }
+
+  authLoginAks(form = {}) {
+    return this.axios.post(
+      "https://test.aiqnmsg.com/znzp/marker/login.shtml",
+      qs.stringify(form),
       {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"

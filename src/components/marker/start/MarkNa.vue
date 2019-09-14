@@ -3,27 +3,27 @@
   <div class="container" v-if="question.id">
     <div v-if="question.problemAnswerMethod === 1" class="top-video">
       <div class="com-pos">
-        <div>公司名称：{{question.companyName}}</div>
-        <div>职位名称：{{question.jobtitle}}</div>
-        <div>面试者：{{question.name}}</div>
-        <div>手机号：{{question.phone}}</div>
-        <div>面试渠道：{{question.interviewChannel}}</div>
+        <div>Company Name：{{question.companyName}}</div>
+        <div>Job Title：{{question.jobtitle}}</div>
+        <div>Interviewer：{{question.name}}</div>
+        <div>Mobile Number：{{question.phone}}</div>
+        <div>Interview Channel：{{question.interviewChannel}}</div>
       </div>
       <div class="video">
         <video-player v-if="videoSource.length>0" :options="playerOptions" :playsinline="true" class="vjs-big-play-centered"></video-player>
-        <div v-else class="no-video">没有录制视频</div>
+        <div v-else class="no-video">No Video</div>
       </div>
       <div class="video-list" v-if="videoSource.length>1">
-        <div v-for="(video,i) in videoSource" :key="i" @click="changeVideo(i)" :class="getclass(i)"><a>{{`视频 ${i}`}}</a></div>
+        <div v-for="(video,i) in videoSource" :key="i" @click="changeVideo(i)" :class="getclass(i)"><a>{{`Video ${i}`}}</a></div>
       </div>
     </div>
     <div v-if="question.problemAnswerMethod === 0" style="padding-left:15px;">
       <div :style="{padding:'15px 0'}">
-        <h3>公司名称：{{question.companyName}}</h3>
-        <h4>职位名称：{{question.jobtitle}}</h4>
-        <h4>面试者：{{question.name}}</h4>
-        <h4>手机号：{{question.phone}}</h4>
-        <h4>面试渠道：{{question.interviewChannel}}</h4>
+        <h3>Company Name：{{question.companyName}}</h3>
+        <h4>Job Title：{{question.jobtitle}}</h4>
+        <h4>Interviewer：{{question.name}}</h4>
+        <h4>Mobile Number：{{question.phone}}</h4>
+        <h4>Interview Channel：{{question.interviewChannel}}</h4>
       </div>
     </div>
     <div :style="{padding:'5px 15px'}">
@@ -31,7 +31,7 @@
       <div class="answercontent">
         <div>
           <br>
-          <span>回答：</span>
+          <span>Answer：</span>
           <p style="line-heigt:25px;text-indent:2em;" v-html="question.answer">
             {{question.answer}}
           </p>
@@ -56,15 +56,15 @@
     <div>
       <div style="padding: 0 10px;">
         <div style="text-align: left;padding-left: 75px;">
-          <span style="padding: 0 25px;background: #f1f1f1">综合评分</span>
+          <span style="padding: 0 25px;background: #f1f1f1">Comprehensive Score</span>
         </div>
         <div style="height: 1px;background: black;margin-top: -12.5px;"></div>
       </div>
       <br>
       <checker v-model="markResult" class="checker2" selected-item-class="sic">
-        <checker-item :value="2">优秀</checker-item>
-        <checker-item :value="1">良好</checker-item>
-        <checker-item :value="0">差</checker-item>
+        <checker-item :value="2">Excellent</checker-item>
+        <checker-item :value="1">Good</checker-item>
+        <checker-item :value="0">Bad</checker-item>
       </checker>
     </div>
     <br>
@@ -96,98 +96,98 @@ export default {
     return {
       ratetemplate: {
         speed: {
-          text: '语速',
+          text: 'Speed',
           items: [{
-              name: '无效',
+              name: 'Invalid',
               value: 0
             },
             {
-              name: '过慢',
+              name: 'Too Slow',
               value: '-'
             },
             {
-              name: '适中',
+              name: 'Just Right',
               value: 1
             },
             {
-              name: '过快',
+              name: 'Too Fast',
               value: '--'
             },
           ],
           rate: null,
         },
         volume: {
-          text: '音量',
+          text: 'Volume',
           items: [{
-              name: '无效',
+              name: 'Invalid',
               value: 0
             },
             {
-              name: '适合',
+              name: 'Too Loud',
+              value: '--',
+            },
+            {
+              name: 'Just Right',
               value: 1
             },
             {
-              name: '太大',
+              name: 'Too Soft',
               value: '-'
             },
           ],
           rate: null,
         },
         tone: {
-          text: '音调',
+          text: 'Vocal Variety',
           items: [{
-              name: '无效',
+              name: 'Invalid',
               value: 0
             },
             {
-              name: '过平缓',
+              name: 'Mostly Flat',
               value: '-'
             },
             {
-              name: '适中',
+              name: 'Just Right',
               value: 1
             },
             {
-              name: '过起伏',
+              name: 'Overly Varied',
               value: '--'
             },
           ],
           rate: null,
         },
         nervous: {
-          text: '紧张',
+          text: 'Degree of Nervousness',
           items: [{
-              name: '无效',
+              name: 'Invalid',
               value: 0
             },
             {
-              name: '紧张',
+              name: 'Nervous',
               value: '-'
             },
             {
-              name: '不紧张',
+              name: 'Not Nervous',
               value: 1
             },
           ],
           rate: null,
         },
         expression: {
-          text: '流畅',
+          text: 'Degree of Fluency',
           items: [{
-              name: '无效',
+              name: 'Invalid',
               value: 0
             },
             {
-              name: '不流畅',
+              name: 'Not Fluent',
               value: '-'
             },
             {
-              name: '流畅',
+              name: 'Fluent',
               value: 1
-            },
-            {
-              name: '很流畅',
-              value: 2
             },
           ],
           rate: null,
@@ -203,9 +203,9 @@ export default {
       index: 0,
       showActionsheet: true,
       markServerList: {
-        // beta: '测试区',
-        // publish: '正式区',
-        // publishEn: '正式区-英文(空客)',
+        beta: '测试区',
+        publish: '正式区',
+        publishEn: '正式区-英文(空客)',
         akspublish: 'Acadsoc',
         aksbeta: 'Acadsoc(Test)',
       },
@@ -298,7 +298,7 @@ export default {
             // }
             this.$vux.alert.show({
               title: 'Notice',
-              content: '没有更多的题目了',
+              content: 'No More Question',
               buttonText: 'OK',
               onShow() {},
               onHide: () => {
@@ -456,13 +456,16 @@ export default {
 .rate {
   display: flex;
   // height: 55px;
+  border-bottom: 1px solid #c7c2c2;
 
   .item {
-    width: 55px;
-    min-width: 55px;
-    height: 55px;
-    line-height: 55px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 110px;
+    min-width: 110px;
     text-align: center;
+
     font-weight: bold;
   }
 
@@ -485,7 +488,7 @@ export default {
       justify-content: flex-start;
 
       >div {
-        min-width: 120px;
+        min-width: 80px;
         height: 40px;
         background: #f1f1f1;
         margin-right: 8px;
@@ -502,14 +505,14 @@ export default {
 }
 
 .checker2 {
-  width: 250px;
+  width: 300px;
   /*margin: 0 auto;*/
   padding-left: 15px;
   display: flex;
   justify-content: space-around;
 
   >div {
-    min-width: 65px;
+    min-width: 90px;
     height: 35px;
     line-height: 35px;
     border: 1.5px solid black;
