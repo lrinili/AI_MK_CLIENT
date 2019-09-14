@@ -166,24 +166,20 @@ export default {
         }).then(res => {
           console.log(res.data)
           loading.close()
-          if (res.data.resultCode === '200') {
-          //   let content = res.data.content
-          //   console.log(content)
-          //   sessionStorage.setItem('auth', JSON.stringify({
-          //     ...content,
-          //     loginType: this.form.loginType,
-          //     token: content['mkToken'],
-          //   }))
+          if (res.data.status === '200') {
+            sessionStorage.setItem('auth', JSON.stringify({
+              token: 'abcdefghijklmnopqrstuvwxyzabcdef',
+            }))
           //   console.log(this.$route)
-          //   if (this.$route.query.redirect) {
-          //     this.$router.push({
-          //       path: this.$route.query.redirect
-          //     })
-          //   } else {
-          //     this.$router.push({
-          //       name: 'home'
-          //     })
-          //   }
+            if (this.$route.query.redirect) {
+              this.$router.push({
+                path: this.$route.query.redirect
+              })
+            } else {
+              this.$router.push({
+                name: 'home'
+              })
+            }
           } else {
             this.errorMsg = res.data.resultDesc
             this.showError = true

@@ -1,5 +1,5 @@
 import axios from "axios";
-import qs from 'querystring'
+import qs from "querystring";
 
 console.log(process.env);
 const env = process.env.NODE_ENV;
@@ -44,8 +44,9 @@ class HttpClient {
   }
 
   sendsms(nationalcode, phone) {
+    console.log("sendsms", nationalcode, phone);
     return this.axios.post(
-      "https://test.aiqnmsg.com/znzp/marker/getvercode.shtml",
+      "https://aks.aiqnmsg.com/znzp/marker/getvercode.shtml",
       qs.stringify({ nationalcode, phone }),
       {
         headers: {
@@ -57,7 +58,7 @@ class HttpClient {
 
   authLoginAks(form = {}) {
     return this.axios.post(
-      "https://test.aiqnmsg.com/znzp/marker/login.shtml",
+      "https://aks.aiqnmsg.com/znzp/marker/login.shtml",
       qs.stringify(form),
       {
         headers: {
