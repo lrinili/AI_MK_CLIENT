@@ -89,7 +89,7 @@ export default {
       waittingTime: 60,
       showError: false,
       errorMsg: '',
-      prefixPhone: '86'
+      prefixPhone: '63'
     }
   },
   beforeMount() {},
