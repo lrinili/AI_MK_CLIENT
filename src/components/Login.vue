@@ -3,7 +3,7 @@
   <div class="login-container">
     <el-form ref="login-form" :model="form">
       <div class="logo">
-        <img src="../assets/login/logo.png" alt="">
+        <!-- <img src="../assets/login/logo.png" alt=""> -->
       </div>
       <!-- <div class="login-type">
         <el-select v-model="form.loginType" :value="1" placeholder="登录角色">
@@ -210,6 +210,7 @@ export default {
 
   .logo {
     width: 50%;
+    height: 180px;
     margin: 0 auto;
 
     img {
