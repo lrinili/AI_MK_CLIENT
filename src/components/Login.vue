@@ -1,56 +1,63 @@
 <template>
-<div class="bg">
-  <div class="login-container">
-    <el-form ref="login-form" :model="form">
-      <div class="logo">
-        <!-- <img src="../assets/login/logo.png" alt=""> -->
-      </div>
-      <!-- <div class="login-type">
+  <div class="bg">
+    <div class="login-container">
+      <el-form ref="login-form" :model="form">
+        <div class="logo">
+          <!-- <img src="../assets/login/logo.png" alt=""> -->
+        </div>
+        <!-- <div class="login-type">
         <el-select v-model="form.loginType" :value="1" placeholder="登录角色">
           <el-option :value="1" label="标注师" />
           <el-option :value="2" label="面试辅导师" />
           <el-option :value="3" label="简历辅导师" />
         </el-select>
       </div> -->
-      <br>
-      <div class="input_phone">
-        <el-input v-model="form.phoneNo" placeholder="Mobile Number">
-          <el-select v-model="prefixPhone" slot="prepend">
-            <el-option label="+63" value="63"></el-option>
-            <el-option label="+86" value="86"></el-option>
-          </el-select>
-        </el-input>
-      </div>
-      <br>
-      <div class="input_code">
-        <div class="code">
-          <el-input v-model="form.captcha" placeholder="Verification Code" />
+        <br />
+        <div class="input_phone">
+          <el-input v-model="form.phoneNo" placeholder="Mobile Number">
+            <el-select v-model="prefixPhone" slot="prepend">
+              <el-option label="+63" value="63"></el-option>
+              <el-option label="+86" value="86"></el-option>
+            </el-select>
+          </el-input>
         </div>
-        <div class="send">
-          <el-button :disabled="!isRightPhone" @click="getCode" :style="[send_btn,isRightPhone?active:inactive]">{{code_text}}</el-button>
+        <br />
+        <div class="input_code">
+          <div class="code">
+            <el-input v-model="form.captcha" placeholder="Verification Code" />
+          </div>
+          <div class="send">
+            <el-button
+              :disabled="!isRightPhone"
+              @click="getCode"
+              :style="[send_btn, isRightPhone ? active : inactive]"
+              >{{ code_text }}</el-button
+            >
+          </div>
         </div>
-      </div>
-      <br>
-      <div class="btn_login">
-        <el-button :disabled="!canLogin" @click="submitLogin" :style="[login_btn,canLogin?active:inactive]">Login
-        </el-button>
-      </div>
-    </el-form>
+        <br />
+        <div class="btn_login">
+          <el-button
+            :disabled="!canLogin"
+            @click="submitLogin"
+            :style="[login_btn, canLogin ? active : inactive]"
+            >Login
+          </el-button>
+        </div>
+      </el-form>
+    </div>
+    <alert v-model="showError" title="Error" button-text="OK">
+      {{ this.errorMsg }}</alert
+    >
   </div>
-  <alert v-model="showError" title="Error" button-text="OK"> {{ this.errorMsg}}</alert>
-</div>
 </template>
 
 <script>
-import {
-  PopupRadio,
-  Group,
-  Alert
-} from 'vux'
-import ElSelectDropdown from 'element-ui/packages/select/src/select-dropdown'
+import { PopupRadio, Group, Alert } from "vux";
+import ElSelectDropdown from "element-ui/packages/select/src/select-dropdown";
 
 export default {
-  name: 'Login',
+  name: "Login",
   components: {
     ElSelectDropdown,
     PopupRadio,
@@ -60,143 +67,166 @@ export default {
   data() {
     return {
       form: {
-        phoneNo: '',
-        captcha: '',
-        loginType: 1,
+        phoneNo: "",
+        captcha: "",
+        loginType: 1
       },
       send_btn: {
-        border: 'none',
-        height: '46.5px',
-        width: '110px',
-        borderTopRightRadius: '46.5px',
-        borderBottomRightRadius: '46.5px'
+        border: "none",
+        height: "46.5px",
+        width: "110px",
+        borderTopRightRadius: "46.5px",
+        borderBottomRightRadius: "46.5px"
       },
       login_btn: {
-        border: 'none',
-        width: '100%',
-        height: '48px',
-        borderRadius: '48px'
+        border: "none",
+        width: "100%",
+        height: "48px",
+        borderRadius: "48px"
       },
       active: {
-        background: '#4189FF',
-        color: 'white'
+        background: "#4189FF",
+        color: "white"
       },
       inactive: {
-        background: '#aecfff',
-        color: 'gray'
+        background: "#aecfff",
+        color: "gray"
       },
       remainingTime: 0,
       waittingTime: 60,
       showError: false,
-      errorMsg: '',
-      prefixPhone: '63'
-    }
+      errorMsg: "",
+      prefixPhone: "63"
+    };
   },
   beforeMount() {},
   mounted() {
-    document.title = 'Login'
-    console.log(this.$httpClient)
+    document.title = "Login";
+    console.log(this.$httpClient);
   },
   computed: {
     code_text() {
-      return this.remainingTime === 0 ? 'Get Code' : this.remainingTime + 's'
+      return this.remainingTime === 0 ? "Get Code" : this.remainingTime + "s";
     },
     isRightPhone() {
-      if (this.prefixPhone === '+86') {
-        return /(13|14|15|17|18|19)[0-9]{9}/.test(this.form.phoneNo) && this.form.phoneNo.length === 11 && this.remainingTime === 0
+      if (this.prefixPhone === "+86") {
+        return (
+          /(13|14|15|17|18|19)[0-9]{9}/.test(this.form.phoneNo) &&
+          this.form.phoneNo.length === 11 &&
+          this.remainingTime === 0
+        );
       } else {
-        return /\d+/.test(this.form.phoneNo)
+        return /\d+/.test(this.form.phoneNo);
       }
     },
     isCaptchaFilled() {
-      let captcha = this.form.captcha
-      return /([0-9]{4})|([0-9]{6})/.test(captcha) && (captcha.length === 4 || captcha.length === 6)
+      let captcha = this.form.captcha;
+      return (
+        /([0-9]{4})|([0-9]{6})/.test(captcha) &&
+        (captcha.length === 4 || captcha.length === 6)
+      );
     },
     canLogin() {
-      return this.isCaptchaFilled && Number.isInteger(this.form.loginType) && this.isRightPhone
+      return (
+        this.isCaptchaFilled &&
+        Number.isInteger(this.form.loginType) &&
+        this.isRightPhone
+      );
     }
   },
   methods: {
     getCode() {
-      this.remainingTime = this.waittingTime
+      this.remainingTime = this.waittingTime;
       let timer = setInterval(() => {
-        this.remainingTime--
+        this.remainingTime--;
         if (this.remainingTime === 0) {
-          clearInterval(timer)
+          clearInterval(timer);
         }
-      }, 1000)
-      this.$httpClient.sendsms(this.prefixPhone, this.form.phoneNo, ).then(res => {
-        console.log(res.data)
-        // if (res.data.code !== '2') {
-        //   this.errorMsg = res.data.msg
-        //   this.showError = true
-        //   this.remainingTime = 0
-        //   clearInterval(timer)
-        // }
-      }).catch(() => {
-        this.errorMsg = 'Server is busy now.'
-        this.showError = true
-        this.remainingTime = 0
-        clearInterval(timer)
-      })
+      }, 1000);
+      this.$httpClient
+        .sendsms(this.prefixPhone, this.form.phoneNo)
+        .then(res => {
+          console.log(res.data);
+          // if (res.data.code !== '2') {
+          //   this.errorMsg = res.data.msg
+          //   this.showError = true
+          //   this.remainingTime = 0
+          //   clearInterval(timer)
+          // }
+        })
+        .catch(() => {
+          this.errorMsg = "Server is busy now.";
+          this.showError = true;
+          this.remainingTime = 0;
+          clearInterval(timer);
+        });
     },
     submitLogin() {
       const loading = this.$loading({
         lock: true,
-        text: '',
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.7)'
-      })
-      let testlogin = false
+        text: "",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
+      let testlogin = false;
 
       if (testlogin) {
-        loading.close()
-        sessionStorage.setItem('auth', JSON.stringify({
-          loginType: this.form.loginType,
-          token: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-        }))
+        loading.close();
+        sessionStorage.setItem(
+          "auth",
+          JSON.stringify({
+            loginType: this.form.loginType,
+            token: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          })
+        );
         this.$router.push({
-          name: 'home'
-        })
+          name: "home"
+        });
       } else {
-        this.$httpClient.authLoginAks({
-          nationalcode: this.prefixPhone,
-          phone: this.form.phoneNo,
-          code: this.form.captcha
-        }).then(res => {
-          console.log(res.data)
-          loading.close()
-          if (res.data.status === '200') {
-            sessionStorage.setItem('auth', JSON.stringify({
-              token: 'abcdefghijklmnopqrstuvwxyzabcdef',
-            }))
-          //   console.log(this.$route)
-            if (this.$route.query.redirect) {
-              this.$router.push({
-                path: this.$route.query.redirect
-              })
+        this.$httpClient
+          .authLoginAks({
+            nationalcode: this.prefixPhone,
+            phone: this.form.phoneNo,
+            code: this.form.captcha
+          })
+          .then(res => {
+            console.log(res.data);
+            loading.close();
+            if (res.data.status === "200") {
+              sessionStorage.setItem(
+                "auth",
+                JSON.stringify({
+                  token: "abcdefghijklmnopqrstuvwxyzabcdef"
+                })
+              );
+              //   console.log(this.$route)
+              if (this.$route.query.redirect) {
+                this.$router.push({
+                  path: this.$route.query.redirect
+                });
+              } else {
+                this.$router.push({
+                  name: "home"
+                });
+              }
             } else {
-              this.$router.push({
-                name: 'home'
-              })
+              this.errorMsg = res.data.resultDesc;
+              this.showError = true;
             }
-          } else {
-            this.errorMsg = res.data.resultDesc
-            this.showError = true
-          }
-        }).catch(e => {
-          console.log(e)
-          loading.close()
-        })
+          })
+          .catch(e => {
+            console.log(e);
+            loading.close();
+          });
       }
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
 .bg {
-  background: url('../assets/login/bg2.jpg') repeat-y center;
+  background: url("../assets/login/bg2.jpg") repeat-y center;
   background-size: 100% 100%;
   min-height: 100%;
   width: 100%;
